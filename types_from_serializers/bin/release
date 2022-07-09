@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cd .. && pnpm release types_from_serializers "$@"

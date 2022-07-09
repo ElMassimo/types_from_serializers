@@ -1,0 +1,30 @@
+name: js
+
+on: [push]
+
+jobs:
+  js:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - uses: pnpm/action-setup@v1.2.1
+        with:
+          version: 5.13.6
+          run_install: |
+            - recursive: false
+
+      - name: Build
+        run: pnpm build
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test

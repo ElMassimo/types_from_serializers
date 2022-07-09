@@ -1,0 +1,41 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - standard
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+
+inherit_gem:
+  standard: config/base.yml
+
+AllCops:
+  SuggestExtensions: false
+  NewCops: enable
+
+Rails:
+  Enabled: true # enable rubocop-rails cops
+RSpec:
+  Enabled: true # enable rubocop-rspec cops
+RSpec/DescribeClass:
+  Enabled: false # ignore missing comments on classes
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/DescribedClass:
+  Enabled: false
+RSpec/Capybara/FeatureMethods:
+  Enabled: false
+
+# Trailing Commas
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+# Outdent Access Modifier
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent

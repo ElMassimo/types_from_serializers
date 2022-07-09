@@ -1,0 +1,9 @@
+fix: true
+ignore:
+  - 'packages/**/*'
+  - 'scripts/**/*'
+  - 'playground/**/*'
+  - '**/*':
+    - Style/TrailingCommaInArrayLiteral
+    - Style/TrailingCommaInHashLiteral
+    - Style/TrailingCommaInArguments

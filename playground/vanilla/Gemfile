@@ -1,0 +1,32 @@
+source "https://rubygems.org"
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+
+gem "rails", "~> 6.0.3", ">= 6.0.3.2"
+
+# Use Puma as the app server
+gem "puma", "~> 4.1"
+
+# Use Vite.js as the frontend tool. Read more: https://github.com/ElMassimo/vite_ruby
+gem "vite_rails"
+
+# Use JS From Routes to generate Api helpers.
+gem "js_from_routes", "~> 2.0.6"
+
+# A more efficient version of ActiveModelSerializers (https://github.com/ElMassimo/oj_serializers)
+gem "oj_serializers"
+
+# Generate TypeScript interfaces from Ruby serializers.
+gem "types_from_serializers", path: "../../types_from_serializers"
+
+# Use SQL Lite as the database.
+gem "sqlite3"
+
+# Use Inertia.js as the nexus between Rails and Vue (https://inertiajs.com/)
+gem "inertia_rails", ">= 1.2.2"
+
+group :development, :test do
+  gem "listen", "~> 3.7"
+  gem "pry-byebug"
+  gem "rspec-rails"
+  gem "rails-controller-testing"
+end

@@ -1,0 +1,23 @@
+{
+  "name": "sample_app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@inertiajs/inertia": "^0.11.0",
+    "@inertiajs/inertia-vue3": "^0.6.0",
+    "@js-from-routes/core": "^1.0",
+    "@js-from-routes/inertia": "^1.10",
+    "@vueuse/core": "^8.9.1",
+    "lodash-es": "^4.17.21",
+    "vue": "^3.2.36"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3",
+    "typescript": "^4",
+    "unplugin-vue-components": "^0.21.1",
+    "vite": "^2.9.6",
+    "vite-plugin-full-reload": "^1.0.1",
+    "vite-plugin-ruby": "^3.0.12",
+    "vite-plugin-windicss": "^1.8"
+  }
+}

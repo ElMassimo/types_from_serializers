@@ -1,5 +1,5 @@
 import { createApp as createVueApp, h } from 'vue'
-import { createInertiaApp, type CreateInertiaAppProps } from '~/inertia'
+import { type CreateInertiaAppProps, createInertiaApp } from '~/inertia'
 import { resolvePage } from '~/pages'
 import '~/services/axios'
 

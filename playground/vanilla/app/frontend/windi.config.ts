@@ -14,10 +14,10 @@ export default defineConfig({
   },
   theme: {
     screens: {
-      sm: '450px',
-      md: '450px',
-      lg: '1024px',
-      xl: '1024px',
+      'sm': '450px',
+      'md': '450px',
+      'lg': '1024px',
+      'xl': '1024px',
       '2xl': '1024px',
     },
   },

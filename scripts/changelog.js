@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
 const fs = require('fs')
 const args = require('minimist')(process.argv.slice(2))
@@ -44,7 +43,8 @@ function writePackageJson (name) {
 }
 
 async function main () {
-  if (isRubyPackage) writePackageJson(name)
+  if (isRubyPackage)
+    writePackageJson(name)
 
   await run('npx', [
     'conventional-changelog',
@@ -56,7 +56,8 @@ async function main () {
     '--commit-path', `./${packagePath}`,
   ])
 
-  if (isRubyPackage) fs.rmSync(resolve('package.json'))
+  if (isRubyPackage)
+    fs.rmSync(resolve('package.json'))
 }
 
 main().catch((err) => {

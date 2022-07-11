@@ -6,7 +6,9 @@ defineProps<{ song: SongWithVideos }>()
 </script>
 
 <template>
-  <PageTitle :backTo="api.songs.index.path()">{{ song.title }}</PageTitle>
+  <PageTitle :backTo="api.songs.index.path()">
+    {{ song.title }}
+  </PageTitle>
   <span class="text-center text-sm italic -mt-2">
     composed by <Link :href="api.composers.show.path(song.composer)">{{ song.composer.name }}</Link>
   </span>

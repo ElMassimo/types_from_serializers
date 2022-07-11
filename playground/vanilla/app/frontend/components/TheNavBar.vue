@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { videos, composers, songs } from '~/api'
+import { composers, songs, videos } from '~/api'
 </script>
 
 <template>

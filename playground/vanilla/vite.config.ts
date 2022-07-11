@@ -27,6 +27,6 @@ export default defineConfig({
     reloadOnChange([
       'config/routes.rb',
       'app/serializers/**/*.rb',
-    ]),
+    ], { delay: 100 }),
   ],
 })

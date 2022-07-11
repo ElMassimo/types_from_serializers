@@ -9,13 +9,20 @@ class TypesFromSerializers::Railtie < Rails::Railtie
   if Rails.env.development?
     # Automatically generates code whenever a serializer is loaded.
     initializer "types_from_serializers.reloader" do |app|
-      if Rails.autoloaders.main.respond_to?(:on_load)
+      if Gem.loaded_specs["listen"]
+        require "listen"
         require_relative "generator"
-        Rails.autoloaders.main.on_load do |name, klass, abs_path|
-          TypesFromSerializers.on_load(name, klass, abs_path)
+        app.config.after_initialize do
+          app.reloaders << TypesFromSerializers.track_changes
+        end
+        app.config.to_prepare do
+          TypesFromSerializers.generate_changed
         end
       else
-        Rails.logger.warn "TypesFromSerializers::Railtie requires Zeitwerk as the autoloader for the Rails app to automatically generate code on changes."
+        app.config.to_prepare do
+          TypesFromSerializers.generate
+        end
+        Rails.logger.warn "Add 'listen' to your Gemfile to automatically generate code on serializer changes."
       end
     end
   end
@@ -26,7 +33,7 @@ class TypesFromSerializers::Railtie < Rails::Railtie
       desc "Generates TypeScript interfaces for each serializer in the app."
       task generate: :environment do
         require_relative "generator"
-        serializers = TypesFromSerializers.generate!(force: true)
+        serializers = TypesFromSerializers.generate(force: true)
         puts "Generated TypeScript interfaces for #{serializers.size} serializers:"
         puts serializers.map { |s| "\t#{s.name}" }.join("\n")
       end

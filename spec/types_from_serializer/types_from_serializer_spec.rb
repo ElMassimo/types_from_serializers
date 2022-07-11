@@ -49,7 +49,7 @@ describe TypesFromSerializers do
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
   it "should generate the files as expected" do
     expect_templates.to be_rendered.exactly(3).times.and_call_original
-    TypesFromSerializers.generate!
+    TypesFromSerializers.generate
 
     # It does not generate routes that don't have `export: true`.
     expect(output_file_for("Welcome").exist?).to eq false
@@ -60,12 +60,12 @@ describe TypesFromSerializers do
     end
 
     # It does not render if generating again.
-    TypesFromSerializers.generate!
+    TypesFromSerializers.generate
   end
 
   context "changing the template" do
     before do
-      TypesFromSerializers.generate!
+      TypesFromSerializers.generate
 
       TypesFromSerializers.config do |config|
         config.template_path = different_template_path
@@ -74,7 +74,7 @@ describe TypesFromSerializers do
 
     it "detects changes and re-renders" do
       expect_templates.to be_rendered.exactly(3).times.and_call_original
-      TypesFromSerializers.generate!
+      TypesFromSerializers.generate
 
       # These files should no longer match the sample ones.
       controllers_with_exported_routes.each do |file_name|
@@ -82,13 +82,13 @@ describe TypesFromSerializers do
       end
 
       # It should not rewrite the files if the cache key has not changed.
-      TypesFromSerializers.generate!
+      TypesFromSerializers.generate
     end
   end
 
   context "when generating all_helpers_file" do
     before do
-      TypesFromSerializers.generate!
+      TypesFromSerializers.generate
 
       TypesFromSerializers.config do |config|
         config.all_helpers_file = true
@@ -96,13 +96,13 @@ describe TypesFromSerializers do
     end
 
     it "generates a file with all helpers" do
-      TypesFromSerializers.generate!
+      TypesFromSerializers.generate
       expect(output_dir.join("all.ts").exist?).to eq true
       expect(output_dir.join("index.ts").exist?).to eq true
 
       # Should not trigger another render.
       expect_templates.not_to be_rendered
-      TypesFromSerializers.generate!
+      TypesFromSerializers.generate
     end
   end
 

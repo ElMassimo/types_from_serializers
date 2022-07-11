@@ -39,7 +39,7 @@ module_function
 
   def gemfile
     gemfile = ENV["BUNDLE_GEMFILE"]
-    return gemfile if gemfile.present?
+    return gemfile if gemfile && !gemfile.empty?
 
     File.expand_path("../../Gemfile", __FILE__)
   end

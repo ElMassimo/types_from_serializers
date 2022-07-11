@@ -11,6 +11,13 @@ AllCops:
   SuggestExtensions: false
   NewCops: enable
 
+  Exclude:
+    - bin/**/*
+    - node_modules/**/*
+    - public/**/*
+    - bin/bundle
+    - playground/vanilla/bin/bundle
+
 Rails:
   Enabled: true # enable rubocop-rails cops
 RSpec:

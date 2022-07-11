@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.authors = ["Máximo Mussini"]
   s.email = ["maximomussini@gmail.com"]
   s.summary = "Generate TypeScript interfaces from your JSON serializers."
-  s.description = "types_from_serializers helps you by automatically generating TypeScript interfaces for your serializers, allowing you typecheck your frontend code to ship fast and with confidence."
+  s.description = "types_from_serializers helps you by automatically generating TypeScript interfaces for your JSON serializers, allowing you typecheck your frontend code to ship fast and with confidence."
   s.homepage = "https://github.com/ElMassimo/types_from_serializers"
   s.license = "MIT"
   s.extra_rdoc_files = ["README.md"]
@@ -15,10 +15,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency "railties", ">= 5.1", "< 8"
   s.add_dependency "oj_serializers", "~> 1.0"
-  s.add_dependency "zeitwerk", "~> 2.5"
+  s.add_dependency "listen", "~> 3.2"
 
   s.add_development_dependency "bundler", "~> 2"
-  s.add_development_dependency "listen", "~> 3.2"
   s.add_development_dependency "pry-byebug", "~> 3.9"
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec-given", "~> 3.8"

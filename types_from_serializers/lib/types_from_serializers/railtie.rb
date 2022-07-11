@@ -2,12 +2,11 @@
 
 require "rails/railtie"
 
-# NOTE: Not strictly required, but it helps to simplify the setup.
 class TypesFromSerializers::Railtie < Rails::Railtie
   railtie_name :types_from_serializers
 
-  if Rails.env.development?
-    # Automatically generates code whenever a serializer is loaded.
+  # Automatically generates code whenever a serializer is loaded.
+  if defined?(Rails.env) && Rails.env.development?
     initializer "types_from_serializers.reloader" do |app|
       if Gem.loaded_specs["listen"]
         require "listen"

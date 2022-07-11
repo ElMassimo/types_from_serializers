@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_support/concern"
+
 # Internal: A DSL to specify types for serializer attributes.
 module TypesFromSerializer
   module DSL

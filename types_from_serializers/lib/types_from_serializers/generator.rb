@@ -8,7 +8,8 @@ require "pathname"
 module TypesFromSerializers
   # Internal: The configuration for TypeScript generation.
   Config = Struct.new(
-    :serializers_dir,
+    :base_serializers,
+    :serializers_dirs,
     :output_dir,
     :name_from_serializer,
     :native_types,
@@ -145,11 +146,11 @@ module TypesFromSerializers
 
   # Internal: Structure to keep track of changed files.
   class Changes
-    def initialize(dir)
+    def initialize(dirs)
       @added = Set.new
       @removed = Set.new
       @modified = Set.new
-      track_changes(dir)
+      track_changes(dirs)
     end
 
     def updated?
@@ -177,8 +178,8 @@ module TypesFromSerializers
   private
 
 
-    def track_changes(dir)
-      Listen.to(dir, only: %r{.rb$}) do |modified, added, removed|
+    def track_changes(dirs)
+      Listen.to(*dirs, only: %r{.rb$}) do |modified, added, removed|
         modified.each { |file| @modified.add(file) }
         added.each { |file| @added.add(file) }
         removed.each { |file| @removed.add(file) }
@@ -249,7 +250,7 @@ module TypesFromSerializers
 
     # Internal: Checks if it should avoid generating an interface.
     def skip_serializer?(name)
-      name.include?("BaseSerializer")
+      name.include?("BaseSerializer") || name.in?(config.base_serializers)
     end
 
     # Internal: Returns an object compatible with FileUpdateChecker.
@@ -264,11 +265,11 @@ module TypesFromSerializers
     end
 
     def changes
-      @changes ||= Changes.new(config.serializers_dir)
+      @changes ||= Changes.new(config.serializers_dirs)
     end
 
     def all_serializer_files
-      Dir["#{config.serializers_dir}/**/*.rb"]
+      config.serializers_dirs.map { |dir| Dir["#{dir}/**/*.rb"] }
     end
 
     def load_serializers(files)
@@ -277,17 +278,22 @@ module TypesFromSerializers
     end
 
     def loaded_serializers
-      BaseSerializer.descendants
+      config.base_serializers.map(&:constantize)
+        .flat_map(&:descendants)
+        .uniq
         .sort_by(&:name)
         .reject { |s| skip_serializer?(s.name) }
     rescue NameError
-      raise ArgumentError, "Please define a BaseSerializer which is inherited by all serializers to automate generation."
+      raise ArgumentError, "Please ensure all your serializers extend BaseSerializer, or configure `config.base_serializers`."
     end
 
     def default_config(root)
       Config.new(
-        # The dir where the serializer files are located.
-        serializers_dir: root.join("app/serializers").to_s,
+        # The base serializers that all other serializers extend.
+        base_serializers: ["BaseSerializer"],
+
+        # The dirs where the serializer files are located.
+        serializers_dirs: [root.join("app/serializers").to_s],
 
         # The dir where interface files are placed.
         output_dir: root.join(defined?(ViteRuby) ? ViteRuby.config.source_code_dir : "app/frontend").join("types/serializers"),

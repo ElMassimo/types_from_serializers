@@ -11,7 +11,7 @@
 require "rubygems"
 
 m = Module.new do
-  module_function
+module_function
 
   def invoked_as_script?
     File.expand_path($0) == File.expand_path(__FILE__)
@@ -39,7 +39,7 @@ m = Module.new do
 
   def gemfile
     gemfile = ENV["BUNDLE_GEMFILE"]
-    return gemfile if gemfile && !gemfile.empty?
+    return gemfile if gemfile.present?
 
     File.expand_path("../../Gemfile", __FILE__)
   end

@@ -13,7 +13,8 @@ module TypesFromSerializers
     :name_from_serializer,
     :native_types,
     :sql_to_typescript_type_mapping,
-    keyword_init: true)
+    keyword_init: true,
+  )
 
   # Internal: The type metadata for a serializer.
   SerializerMetadata = Struct.new(
@@ -21,7 +22,8 @@ module TypesFromSerializers
     :associations,
     :model_name,
     :types_from,
-    keyword_init: true)
+    keyword_init: true,
+  )
 
   # Internal: The type metadata for a serializer field.
   FieldMetadata = Struct.new(:name, :type, :optional, :many, keyword_init: true) do
@@ -54,12 +56,12 @@ module TypesFromSerializers
     refine Class do
       # Internal: Name of the TypeScript interface.
       def typescript_interface_name
-        TypesFromSerializers.config.name_from_serializer.(name).tr_s(":", "")
+        TypesFromSerializers.config.name_from_serializer.call(name).tr_s(":", "")
       end
 
       # Internal: The base name of the TypeScript file to be written.
       def typescript_interface_basename
-        TypesFromSerializers.config.name_from_serializer.(name).gsub("::", "/")
+        TypesFromSerializers.config.name_from_serializer.call(name).gsub("::", "/")
       end
 
       # Internal: A first pass of gathering types for the serializer fields.
@@ -193,7 +195,7 @@ module TypesFromSerializers
 
     # Internal: Checks if it should avoid generating an interface.
     def skip_serializer?(name)
-      name.include?('BaseSerializer')
+      name.include?("BaseSerializer")
     end
 
     # Internal: When a class is loaded during development, if it's a serializer,
@@ -250,7 +252,7 @@ module TypesFromSerializers
           text: :string,
         }.tap do |types|
           types.default = :unknown
-        end
+        end,
       )
     end
 

@@ -10,7 +10,7 @@ class TypesFromSerializers::Railtie < Rails::Railtie
     # Automatically generates code whenever a serializer is loaded.
     initializer "types_from_serializers.reloader" do |app|
       if Rails.autoloaders.main.respond_to?(:on_load)
-        require_relative 'generator'
+        require_relative "generator"
         Rails.autoloaders.main.on_load do |name, klass, abs_path|
           TypesFromSerializers.on_load(name, klass, abs_path)
         end
@@ -25,7 +25,7 @@ class TypesFromSerializers::Railtie < Rails::Railtie
     namespace :types_from_serializers do
       desc "Generates TypeScript interfaces for each serializer in the app."
       task generate: :environment do
-        require_relative 'generator'
+        require_relative "generator"
         serializers = TypesFromSerializers.generate!(force: true)
         puts "Generated TypeScript interfaces for #{serializers.size} serializers:"
         puts serializers.map { |s| "\t#{s.name}" }.join("\n")

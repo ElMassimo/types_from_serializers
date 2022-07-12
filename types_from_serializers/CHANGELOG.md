@@ -1,3 +1,12 @@
+## [0.1.3](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@0.1.2...types_from_serializers@0.1.3) (2022-07-12)
+
+
+### Features
+
+* apply the sql mapping fallback as the default ([64898c4](https://github.com/ElMassimo/types_from_serializers/commit/64898c4e3a3f83ea67294f2200f253cd2a64aea9))
+
+
+
 ## [0.1.2](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@0.1.1...types_from_serializers@0.1.2) (2022-07-12)
 
 

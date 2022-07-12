@@ -10,14 +10,11 @@ const videoWidth = $computed(() => Math.min(width, 600) - 32)
 const videoHeight = $computed(() => 315 / 560 * videoWidth)
 
 const embedUrl = $computed(() => `https://www.youtube.com/embed/${video.youtubeId}`)
-
-const display = $ref(false)
 </script>
 
 <template>
   <transition name="fade" appear>
     <iframe
-      v-show="display"
       ref="youtubeEmbed"
       :width="videoWidth"
       :height="videoHeight"
@@ -26,7 +23,6 @@ const display = $ref(false)
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen
-      @load="display = true"
     />
   </transition>
 </template>

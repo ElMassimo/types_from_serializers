@@ -8,7 +8,8 @@ class VideoSerializer < BaseSerializer
     :youtube_id,
   )
 
-  typed_attributes(
-    youtube_url: :string,
-  )
+  type :string, optional: true
+  def youtube_url
+    video.youtube_url
+  end
 end

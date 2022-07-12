@@ -94,9 +94,9 @@ class VideoSerializer < BaseSerializer
 
   attributes :id, :created_at, :title, :youtube_id
 
-  type :string
+  type :string, optional: true
   def youtube_url
-    "https://www.youtube.com/watch?v=#{video.youtube_id}"
+    "https://www.youtube.com/watch?v=#{video.youtube_id}" if video.youtube_id
   end
 
   has_one :song, serializer: SongSerializer
@@ -113,7 +113,7 @@ export default interface Video {
   createdAt: string | Date
   title?: string
   youtubeId?: string
-  youtubeUrl: string
+  youtubeUrl?: string
   song: Song
 }
 ```

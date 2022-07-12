@@ -12,4 +12,8 @@ class VideoSerializer < BaseSerializer
   def youtube_url
     video.youtube_url
   end
+
+  attribute \
+  def untyped_field_example
+  end
 end

@@ -15,7 +15,11 @@ module TypesFromSerializers
     :native_types,
     :sql_to_typescript_type_mapping,
     keyword_init: true,
-  )
+  ) do
+    def unknown_type
+      sql_to_typescript_type_mapping.default
+    end
+  end
 
   # Internal: The type metadata for a serializer.
   SerializerMetadata = Struct.new(
@@ -134,7 +138,7 @@ module TypesFromSerializers
 
       def typescript_fields(metadata)
         (metadata.attributes + metadata.associations).map { |meta|
-          type = meta.type.is_a?(Class) ? meta.type.typescript_interface_name : meta.type || :unknown
+          type = meta.type.is_a?(Class) ? meta.type.typescript_interface_name : meta.type || TypesFromSerializers.config.unknown_type
           type = meta.many ? "#{type}[]" : type
           "  #{meta.typescript_name}#{"?" if meta.optional}: #{type}"
         }
@@ -199,6 +203,7 @@ module TypesFromSerializers
     # Public: Generates code for all serializers in the app.
     def generate(force: ENV["SERIALIZER_TYPES_FORCE"])
       @force_generation = force
+      config.output_dir.rmtree if force && config.output_dir.exist?
       generate_index_file
 
       loaded_serializers.each do |serializer|

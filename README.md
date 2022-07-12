@@ -19,6 +19,7 @@ Types From Serializers
 [Vite Ruby]: https://github.com/ElMassimo/vite_ruby
 [vite-plugin-full-reload]: https://github.com/ElMassimo/vite-plugin-full-reload
 [base_serializers]: https://github.com/ElMassimo/types_from_serializers#base_serializers
+[config]: https://github.com/ElMassimo/types_from_serializers#configuration-%EF%B8%8F
 
 Automatically generate TypeScript interfaces from your [JSON serializers][oj_serializers].
 
@@ -51,6 +52,75 @@ autocompletion in the frontend, without having to manually write the types.
 - Detects [conditional attributes](https://github.com/ElMassimo/oj_serializers#rendering-an-attribute-conditionally) and marks them as optional: `name?: string`
 - Fallback to a custom interface using `type_from`
 - Supports custom types and automatically adds the necessary imports
+
+## Demo 🎬
+
+For a schema such as [this one](https://github.com/ElMassimo/types_from_serializers/blob/main/playground/vanilla/db/schema.rb):
+
+<details>
+  <summary>DB Schema</summary>
+
+```ruby
+  create_table "composers", force: :cascade do |t|
+    t.text "first_name"
+    t.text "last_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "songs", force: :cascade do |t|
+    t.text "title"
+    t.integer "composer_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "video_clips", force: :cascade do |t|
+    t.text "title"
+    t.text "youtube_id"
+    t.integer "song_id"
+    t.integer "composer_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+```
+</details>
+
+and a serializer like the following:
+
+```ruby
+class VideoSerializer < BaseSerializer
+  object_as :video, model: :VideoClip
+
+  attributes :id, :created_at, :title, :youtube_id
+
+  type :string
+  def youtube_url
+    "https://www.youtube.com/watch?v=#{video.youtube_id}"
+  end
+
+  has_one :song, serializer: SongSerializer
+end
+```
+
+it would generate a TypeScript interface like:
+
+```ts
+import type Song from '~/types/serializers/Song'
+
+export default interface Video {
+  id: number
+  createdAt: string | Date
+  title?: string
+  youtubeId?: string
+  youtubeUrl: string
+  song: Song
+}
+```
+
+> **Note**
+>
+> This is the default configuration, but you have [full control][config] over generation.
 
 ## Installation 💿
 

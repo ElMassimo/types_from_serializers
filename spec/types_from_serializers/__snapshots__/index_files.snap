@@ -1,0 +1,10 @@
+[
+  [0] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/base_serializer.rb",
+  [1] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/composer_serializer.rb",
+  [2] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/composer_with_songs_serializer.rb",
+  [3] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/model_serializer.rb",
+  [4] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/song_serializer.rb",
+  [5] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/song_with_videos_serializer.rb",
+  [6] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/video_serializer.rb",
+  [7] "/Users/maximomussini/Projects/types_from_serializers/playground/vanilla/app/serializers/video_with_song_serializer.rb"
+]

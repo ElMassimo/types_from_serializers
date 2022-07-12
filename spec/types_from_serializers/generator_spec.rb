@@ -66,6 +66,8 @@ describe "Generator" do
     # It generates an file that exports all interfaces.
     index_file = output_dir.join("index.ts")
     expect(index_file.exist?).to be true
+    expect(TypesFromSerializers.send(:all_serializer_files)).to match_snapshot("index_files")
+    expect(TypesFromSerializers.send(:all_serializer_files).join).to match_snapshot("index_files_join")
     expect(index_file.read).to match_snapshot("interfaces_index")
 
     # It does not render if generating again.

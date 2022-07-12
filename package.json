@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf playground/vanilla/app/frontend/types/serializers",
-    "gen": "cd playground/vanilla && bundle install && bundle exec rake types_from_serializers:generate",
+    "migrate": "cd playground/vanilla && bundle install && bin/rails db:prepare",
+    "gen": "cd playground/vanilla && bundle exec rake types_from_serializers:generate",
     "tsc": "npm -C playground/vanilla run tsc",
     "release": "node scripts/release",
     "lint": "eslint . --ext .ts,.js,.vue",

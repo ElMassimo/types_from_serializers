@@ -4,6 +4,10 @@ require:
   - rubocop-rspec
   - rubocop-performance
 
+inherit_mode:
+  merge:
+    - Exclude
+
 inherit_gem:
   standard: config/base.yml
 

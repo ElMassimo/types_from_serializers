@@ -255,7 +255,7 @@ module TypesFromSerializers
     end
 
     def all_serializer_files
-      config.serializers_dirs.flat_map { |dir| Dir["#{dir}/**/*.rb"] }
+      config.serializers_dirs.flat_map { |dir| Dir["#{dir}/**/*.rb"] }.sort
     end
 
     def load_serializers(files)

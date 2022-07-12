@@ -1,3 +1,12 @@
+## [0.1.2](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@0.1.1...types_from_serializers@0.1.2) (2022-07-12)
+
+
+### Bug Fixes
+
+* avoid having the full file path in the cache key ([556f8f6](https://github.com/ElMassimo/types_from_serializers/commit/556f8f667608fa950a3ad0647540055b1b5f1dc8))
+
+
+
 ## [0.1.1](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@0.1.0...types_from_serializers@0.1.1) (2022-07-12)
 
 

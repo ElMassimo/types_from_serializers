@@ -26,4 +26,6 @@ end
 require "rubygems"
 require "bundler/setup"
 
+ENV["UPDATE_SNAPSHOTS"] = "true" if ARGV.delete('--update') || ARGV.delete('--update-snapshots')
+
 load Gem.bin_path("rspec-core", "rspec")

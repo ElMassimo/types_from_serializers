@@ -228,7 +228,8 @@ module TypesFromSerializers
 
     # Internal: Allows to import all serializer types from a single file.
     def generate_index_file
-      write_if_changed(filename: "index", cache_key: all_serializer_files.join) {
+      cache_key = all_serializer_files.map { |file| file.delete_prefix(root.to_s) }.join
+      write_if_changed(filename: "index", cache_key: cache_key) {
         load_serializers(all_serializer_files)
         serializers_index_content(loaded_serializers)
       }

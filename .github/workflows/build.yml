@@ -41,7 +41,7 @@ jobs:
         run: pnpm tsc
 
       - name: ESLint
-        run: nr lint
+        run: pnpm lint
 
   test:
     name: test

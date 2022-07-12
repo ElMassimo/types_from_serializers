@@ -283,6 +283,18 @@ serializer will be updated instantly!
 
 ## Configuration ⚙️
 
+You can configure generation in a Rails initializer:
+
+```ruby
+# config/initializers/types_from_serializers.rb
+
+if Rails.env.development?
+  TypesFromSerializers.config do |config|
+    config.name_from_serializer = ->(name) { name }
+  end
+end
+```
+
 ### `base_serializers`
 
 _Default:_ `["BaseSerializer"]`
@@ -320,6 +332,26 @@ You can extend this list as needed if you are using global definitions.
 ### `sql_to_typescript_type_mapping`
 
 Specifies [how to map](https://github.com/ElMassimo/types_from_serializers/blob/main/types_from_serializers/lib/types_from_serializers/generator.rb#L297-L308) SQL column types to TypeScript native and custom types.
+
+```ruby
+# Example: You have response middleware that automatically converts date strings
+# into Date objects, and you want TypeScript to treat those fields as `Date`.
+config.sql_to_typescript_type_mapping.update(
+  date: :Date,
+  datetime: :Date,
+)
+
+# Example: You won't transform fields when receiving data in the frontend
+# (date fields are serialized to JSON as strings).
+config.sql_to_typescript_type_mapping.update(
+  date: :string,
+  datetime: :string,
+)
+
+# Example: You plan to introduce types slowly, and don't want to be strict with
+# untyped fields, so treat them as `any` instead of `unknown`.
+config.sql_to_typescript_type_mapping.default = :any
+```
 
 ## Contact ✉️
 

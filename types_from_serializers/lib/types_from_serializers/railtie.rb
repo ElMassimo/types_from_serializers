@@ -24,7 +24,7 @@ class TypesFromSerializers::Railtie < Rails::Railtie
         app.config.to_prepare do
           TypesFromSerializers.generate
         end
-        
+
         Rails.logger.warn "Add 'listen' to your Gemfile to automatically generate code on serializer changes."
       end
     end

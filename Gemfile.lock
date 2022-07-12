@@ -2,9 +2,9 @@ PATH
   remote: types_from_serializers
   specs:
     types_from_serializers (0.1.0)
+      listen (~> 3.2)
       oj_serializers (~> 1.0)
       railties (>= 5.1, < 8)
-      zeitwerk (~> 2.5)
 
 GEM
   remote: https://rubygems.org/
@@ -146,7 +146,6 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 2)
-  listen (~> 3.2)
   pry-byebug (~> 3.9)
   rake (~> 13)
   rspec-given (~> 3.8)

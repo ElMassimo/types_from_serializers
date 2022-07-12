@@ -9,7 +9,7 @@
     "gen": "cd playground/vanilla && bundle exec rake types_from_serializers:generate",
     "tsc": "npm -C playground/vanilla run tsc",
     "release": "node scripts/release",
-    "lint": "eslint . --ext .ts,.js,.vue",
+    "lint": "eslint playground/vanilla/app/frontend scripts --ext .ts,.js,.vue",
     "postinstall": "husky install",
     "changelog": "node scripts/changelog",
     "test": "vitest"

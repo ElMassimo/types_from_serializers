@@ -1,7 +1,7 @@
 PATH
   remote: ../../types_from_serializers
   specs:
-    types_from_serializers (0.1.0)
+    types_from_serializers (0.1.1)
       listen (~> 3.2)
       oj_serializers (~> 1.0)
       railties (>= 5.1, < 8)

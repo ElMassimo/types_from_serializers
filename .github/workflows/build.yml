@@ -84,6 +84,9 @@ jobs:
           chmod +x ./cc-test-reporter
           ./cc-test-reporter before-build
 
+      - name: Run Migrations
+        run: cd playground/vanilla && bin/rails db:prepare
+
       - name: Ruby Specs
         run: bin/rspec
 

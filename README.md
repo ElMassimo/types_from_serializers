@@ -18,6 +18,7 @@ Types From Serializers
 [TypeScript]: https://www.typescriptlang.org/
 [Vite Ruby]: https://github.com/ElMassimo/vite_ruby
 [vite-plugin-full-reload]: https://github.com/ElMassimo/vite-plugin-full-reload
+[base_serializers]: https://github.com/ElMassimo/types_from_serializers#base_serializers
 
 Automatically generate TypeScript interfaces from your [JSON serializers][oj_serializers].
 
@@ -26,23 +27,20 @@ _Currently, this library targets [`oj_serializers`][oj_serializers] and `ActiveR
 ## Why? 🤔
 
 It's easy for the backend and the frontend to become out of sync.
-Traditionally, catching small bugs requires writing extensive integration tests.
+Traditionally, preventing bugs requires writing extensive integration tests.
 
 [TypeScript] is a great tool to catch this kind of bugs and mistakes, as it can
 detect incorrect usages and missing fields, but writing types manually is
 cumbersome, and they can become stale over time, giving a false sense of confidence.
 
-Using a serializer library like [`active_model_serializers`][ams] or
-[`oj_serializers`][oj_serializers] has the benefit of providing a clear schema,
-making it easy to keep track of which fields will be included in a JSON response.
-
-This library takes advantage of that, extending [`oj_serializers`][oj_serializers]
-to allow embedding type information, as well as extracting it from the SQL
-schema when available.
+This library takes advantage of the declarative nature of serializer libraries
+such as [`active_model_serializers`][ams] and [`oj_serializers`][oj_serializers],
+extending them to allow embedding type information, as well as inferring types
+from the SQL schema when available.
 
 As a result, it's posible to easily detect mismatches between the backend and
 the frontend, as well as make the fields more discoverable and provide great
-autocompletion in the frontend.
+autocompletion in the frontend, without having to manually write the types.
 
 ## Features ⚡️
 
@@ -80,11 +78,11 @@ end
 
 > **Note**
 >
-> You can customize this behavior using [`base_serializers`](#base_serializers).
+> You can customize this behavior using [`base_serializers`][base_serializers].
 
 > **Warning**
 >
-> All serializers should extend one of the [`base_serializers`](#base_serializers), or they won't be
+> All serializers should extend one of the [`base_serializers`][base_serializers], or they won't be
 detected.
 
 
@@ -163,7 +161,7 @@ export default interface Location {
 }
 ```
 
-## Generation ⚙️
+## Generation 📜
 
 To get started, run `bin/rails s` to start the `Rails` development server.
 
@@ -212,6 +210,46 @@ defineConfig({
 
 As a result, when modifying a serializer and hitting save, the type for that
 serializer will be updated instantly!
+
+## Configuration ⚙️
+
+### `base_serializers`
+
+_Default:_ `["BaseSerializer"]`
+
+Allows you to specify the base serializers, that are used to detect other
+serializers in the app that you would like to generate interfaces for.
+
+### `serializers_dirs`
+
+_Default:_ `["app/serializers"]`
+
+The dirs where the serializer files are located.
+
+### `output_dir`
+
+_Default:_ `"app/frontend/types"`
+
+The dir where the generated TypeScript interface files are placed.
+
+### `name_from_serializer`
+
+_Default:_ `->(name) { name.delete_suffix("Serializer") }`
+
+A `Proc` that specifies how to convert the name of the serializer into the name
+of the generated TypeScript interface.
+
+### `native_types`
+
+_Default:_ `["Array", "Record", "Date"]`
+
+Types that don't need to be imported in TypeScript.
+
+You can extend this list as needed if you are using global definitions.
+
+### `sql_to_typescript_type_mapping`
+
+Specifies [how to map](https://github.com/ElMassimo/types_from_serializers/blob/main/types_from_serializers/lib/types_from_serializers/generator.rb#L297-L308) SQL column types to TypeScript native and custom types.
 
 ## Contact ✉️
 

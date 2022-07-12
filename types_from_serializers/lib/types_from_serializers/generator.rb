@@ -42,15 +42,12 @@ module TypesFromSerializers
       end
     end
 
-    # rubocop:disable Rails/Delegate
     refine Symbol do
       def safe_constantize
         to_s.classify.safe_constantize
       end
 
-      def to_model
-        to_s.to_model
-      end
+      delegate :to_model, to: :to_s
     end
     # rubocop:enable Rails/Delegate
 

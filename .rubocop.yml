@@ -20,6 +20,8 @@ AllCops:
 
 Rails:
   Enabled: true # enable rubocop-rails cops
+Rails/Delegate:
+  Enabled: false
 RSpec:
   Enabled: true # enable rubocop-rspec cops
 RSpec/DescribeClass:

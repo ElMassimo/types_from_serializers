@@ -1,9 +1,9 @@
-name: js
+name: tsc
 
 on: [push]
 
 jobs:
-  js:
+  tsc:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,17 +14,21 @@ jobs:
         with:
           node-version: 14.x
 
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
       - uses: pnpm/action-setup@v1.2.1
         with:
           version: 5.13.6
           run_install: |
             - recursive: false
 
-      - name: Build
-        run: pnpm build
+      - name: Clean Types
+        run: pnpm clean
 
-      - name: Lint
-        run: pnpm lint
+      - name: Generate Types
+        run: pnpm gen
 
-      - name: Test
-        run: pnpm test
+      - name: Type Check
+        run: pnpm tsc

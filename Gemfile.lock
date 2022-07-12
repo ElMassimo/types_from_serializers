@@ -149,6 +149,7 @@ DEPENDENCIES
   pry-byebug (~> 3.9)
   rake (~> 13)
   rspec-given (~> 3.8)
+  rubocop
   rubocop-performance
   rubocop-rails
   rubocop-rspec

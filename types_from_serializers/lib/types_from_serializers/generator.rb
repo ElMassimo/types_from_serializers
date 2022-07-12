@@ -47,9 +47,10 @@ module TypesFromSerializers
         to_s.classify.safe_constantize
       end
 
-      delegate :to_model, to: :to_s
+      def to_model
+        to_s.to_model
+      end
     end
-    # rubocop:enable Rails/Delegate
 
     refine Class do
       # Internal: Name of the TypeScript interface.

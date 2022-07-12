@@ -4,10 +4,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "npm -C packages run build",
-    "docs": "npm -C docs run dev",
-    "docs:search": "npm -C docs run search",
-    "dev": "npm -C packages run dev",
+    "clean": "rm -rf playground/vanilla/app/frontend/types/serializers",
+    "gen": "cd playground/vanilla && bundle install && bundle exec rake types_from_serializers:generate",
+    "tsc": "npm -C playground/vanilla run tsc",
     "release": "node scripts/release",
     "lint": "eslint . --ext .ts,.js,.vue",
     "postinstall": "husky install",

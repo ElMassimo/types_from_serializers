@@ -15,28 +15,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         ruby: [
-          2.5,
-          2.7,
           3.0
+          3.1
         ]
         gemfile: [
-          "gemfiles/Gemfile-rails.5.2.x",
-          "gemfiles/Gemfile-rails.6.0.x",
-          "gemfiles/Gemfile-rails.6.1.x"
+          "Gemfile"
         ]
-        experimental: [false]
-        exclude:
-          - ruby: "3.0"
-            gemfile: gemfiles/Gemfile-rails.5.2.x
-        include:
-          - ruby: "2.7"
-            os: ubuntu-latest
-            gemfile: gemfiles/Gemfile-rails-edge
-            experimental: true
-          - ruby: "3.0"
-            os: ubuntu-latest
-            gemfile: gemfiles/Gemfile-rails-edge
-            experimental: true
 
     steps:
       - uses: actions/checkout@v2

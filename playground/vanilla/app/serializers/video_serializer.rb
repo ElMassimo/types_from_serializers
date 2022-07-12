@@ -3,6 +3,7 @@ class VideoSerializer < BaseSerializer
 
   attributes(
     :id,
+    :created_at,
     :title,
     :youtube_id,
   )

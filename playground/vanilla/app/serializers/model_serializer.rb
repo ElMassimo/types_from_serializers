@@ -1,6 +1,8 @@
 class ModelSerializer < BaseSerializer
-  typed_attributes(
-    id: :number,
-    title: :string,
+  object_as :model, types_from: :AnyModel
+
+  attributes(
+    :id,
+    :title,
   )
 end

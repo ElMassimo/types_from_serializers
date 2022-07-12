@@ -7,13 +7,16 @@ class TypesFromSerializers::Railtie < Rails::Railtie
 
   # Automatically generates code whenever a serializer is loaded.
   if defined?(Rails.env) && Rails.env.development?
+    require_relative "generator"
+
     initializer "types_from_serializers.reloader" do |app|
       if Gem.loaded_specs["listen"]
         require "listen"
-        require_relative "generator"
+
         app.config.after_initialize do
           app.reloaders << TypesFromSerializers.track_changes
         end
+
         app.config.to_prepare do
           TypesFromSerializers.generate_changed
         end
@@ -21,6 +24,7 @@ class TypesFromSerializers::Railtie < Rails::Railtie
         app.config.to_prepare do
           TypesFromSerializers.generate
         end
+        
         Rails.logger.warn "Add 'listen' to your Gemfile to automatically generate code on serializer changes."
       end
     end

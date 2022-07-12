@@ -96,7 +96,7 @@ module TypesFromSerializers
         interface = metadata.types_from
 
         metadata.attributes.reject(&:type).each do |meta|
-          if model && (column = model.columns_hash[meta.name.to_s])
+          if model && model.respond_to?(:columns_hash) && (column = model.columns_hash[meta.name.to_s])
             meta[:type] = TypesFromSerializers.config.sql_to_typescript_type_mapping[column.type]
             meta[:optional] ||= column.null
           elsif interface
@@ -125,7 +125,7 @@ module TypesFromSerializers
 
       # Internal: Extracts any types inside generics or array types.
       def extract_typescript_types(type)
-        type.split(/[<>\[\],\s]+/)
+        type.split(/[<>\[\],\s\|]+/)
       end
 
       # NOTE: Treat uppercase names as custom types.
@@ -269,11 +269,10 @@ module TypesFromSerializers
     end
 
     def all_serializer_files
-      config.serializers_dirs.map { |dir| Dir["#{dir}/**/*.rb"] }
+      config.serializers_dirs.flat_map { |dir| Dir["#{dir}/**/*.rb"] }
     end
 
     def load_serializers(files)
-      "Loading serializers:\n#{files.inspect}"
       files.each { |file| require file }
     end
 

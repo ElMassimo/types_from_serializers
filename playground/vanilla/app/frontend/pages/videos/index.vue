@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { VideoClipWithSong } from '~/types/serializers'
+import type { VideoWithSong } from '~/types/serializers'
 import api from '~/api'
 
-defineProps<{ videos: VideoClipWithSong[] }>()
+defineProps<{ videos: VideoWithSong[] }>()
 </script>
 
 <template>

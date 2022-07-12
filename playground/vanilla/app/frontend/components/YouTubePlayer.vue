@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
-import type { VideoClip } from '~/types/serializers'
+import type { Video } from '~/types/serializers'
 
-const { video } = defineProps<{ video: VideoClip }>()
+const { video } = defineProps<{ video: Video }>()
 
 const { width } = $(useWindowSize())
 

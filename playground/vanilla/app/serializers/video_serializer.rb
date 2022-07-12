@@ -1,4 +1,6 @@
-class VideoClipSerializer < BaseSerializer
+class VideoSerializer < BaseSerializer
+  object_as :video_clip
+
   attributes(
     :id,
     :title,

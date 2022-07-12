@@ -8,9 +8,9 @@ importers:
       '@inertiajs/inertia-vue3': ^0.6.0
       '@js-from-routes/core': ^1.0
       '@js-from-routes/inertia': ^1.10
+      '@types/lodash-es': ^4.17.6
       '@vitejs/plugin-vue': ^2.3
       '@vueuse/core': ^8.9.1
-      lite-youtube-embed: ^0.2.0
       lodash-es: ^4.17.21
       typescript: ^4
       unplugin-vue-components: ^0.21.1
@@ -19,6 +19,7 @@ importers:
       vite-plugin-ruby: ^3.0.12
       vite-plugin-windicss: ^1.8
       vue: ^3.2.36
+      vue-tsc: ^0.38.5
     dependencies:
       '@inertiajs/inertia': 0.11.0
       '@inertiajs/inertia-vue3': 0.6.0_lgz5zmprnxmfmyvgtmvu2blgda
@@ -28,14 +29,15 @@ importers:
       lodash-es: 4.17.21
       vue: 3.2.37
     devDependencies:
+      '@types/lodash-es': 4.17.6
       '@vitejs/plugin-vue': 2.3.3_vite@2.9.14+vue@3.2.37
-      lite-youtube-embed: 0.2.0
       typescript: 4.7.4
       unplugin-vue-components: 0.21.1_vite@2.9.14+vue@3.2.37
       vite: 2.9.14
       vite-plugin-full-reload: 1.0.1
       vite-plugin-ruby: 3.0.12_vite@2.9.14
       vite-plugin-windicss: 1.8.6_vite@2.9.14
+      vue-tsc: 0.38.5_typescript@4.7.4
 
 packages:
 
@@ -126,6 +128,16 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
+    dependencies:
+      '@types/lodash': 4.14.182
+    dev: true
+
+  /@types/lodash/4.14.182:
+    resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
+    dev: true
+
   /@types/web-bluetooth/0.0.14:
     resolution: {integrity: sha512-5d2RhCard1nQUC3aHcq/gHzWYO6K0WJmAbjO7mQJgCQKtZpgXxv1rOM6O/dBDhDYYVutk1sciOgNSe+5YyfM8A==}
     dev: false
@@ -139,6 +151,36 @@ packages:
     dependencies:
       vite: 2.9.14
       vue: 3.2.37
+    dev: true
+
+  /@volar/code-gen/0.38.5:
+    resolution: {integrity: sha512-GRGhPKoNtRwZyn9M0b2buobeMR1Aj9zxZI0osanLG9vB9YCnJov1myxKU8EJV5NobpyspLIv1X6/BEHLZNsKig==}
+    dependencies:
+      '@volar/source-map': 0.38.5
+    dev: true
+
+  /@volar/source-map/0.38.5:
+    resolution: {integrity: sha512-TyTLkOtAW/7qnl4Gabt4W4vcKPBPCBdaPLKwkMglKcaX70lPH2CIwZcPMJo6PAilbUVXcuX86xfgdncWDKKaZQ==}
+    dev: true
+
+  /@volar/vue-code-gen/0.38.5:
+    resolution: {integrity: sha512-4t2bX2bCmmlyYwPLqfH3AJXj9Km79uRmCy81recc8LB8ZT2Z9hOFNBAnlGNcCeZAtVWtmHVV7sXJtQAJQxkWeg==}
+    dependencies:
+      '@volar/code-gen': 0.38.5
+      '@volar/source-map': 0.38.5
+      '@vue/compiler-core': 3.2.37
+      '@vue/compiler-dom': 3.2.37
+      '@vue/shared': 3.2.37
+    dev: true
+
+  /@volar/vue-typescript/0.38.5:
+    resolution: {integrity: sha512-Gobtg5gxR3bf/l1h300OWCWkvDQnOINgnxkDYiF8qdTBalW6qGsgGmq0uLBBDLaoahrfM7rqNd5QfJwGBgFXZg==}
+    dependencies:
+      '@volar/code-gen': 0.38.5
+      '@volar/source-map': 0.38.5
+      '@volar/vue-code-gen': 0.38.5
+      '@vue/compiler-sfc': 3.2.37
+      '@vue/reactivity': 3.2.37
     dev: true
 
   /@vue/compiler-core/3.2.37:
@@ -682,10 +724,6 @@ packages:
     resolution: {integrity: sha512-lxpCM3HTvquGxKGzHeknB/sUjuVoUElLlfYnXZT73K8geR9jQbroGlSCFBax9/0mpGoD3kzcMLnOlGQPJJNyqQ==}
     dev: true
 
-  /lite-youtube-embed/0.2.0:
-    resolution: {integrity: sha512-XXXAk5sbvtjjwbie3XG+6HppgTm1HTGL/Uk9z9NkJH53o7puZLur434heHzAjkS60hZB3vT4ls25zl5rMiX4EA==}
-    dev: true
-
   /local-pkg/0.4.1:
     resolution: {integrity: sha512-lL87ytIGP2FU5PWwNDo0w3WhIo2gopIAxPg9RxDYF7m4rr5ahuZxP22xnJHIvaLTe4Z9P6uKKY2UHiwyB4pcrw==}
     engines: {node: '>=14'}
@@ -984,6 +1022,16 @@ packages:
     dependencies:
       vue: 3.2.37
     dev: false
+
+  /vue-tsc/0.38.5_typescript@4.7.4:
+    resolution: {integrity: sha512-AFlqvwpENOTTJxS1Gl1uG0ZVsvtGCbgv9d0i4fXk5Pnao/ETVwWewPEsj+4cPlwa5htO9WhK6qfWwoqcCqg0yQ==}
+    hasBin: true
+    peerDependencies:
+      typescript: '*'
+    dependencies:
+      '@volar/vue-typescript': 0.38.5
+      typescript: 4.7.4
+    dev: true
 
   /vue/3.2.37:
     resolution: {integrity: sha512-bOKEZxrm8Eh+fveCqS1/NkG/n6aMidsI6hahas7pa0w/l7jkbssJVsRhVDs07IdDq7h9KHswZOgItnwJAgtVtQ==}

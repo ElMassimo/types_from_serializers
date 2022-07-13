@@ -25,34 +25,6 @@ Automatically generate TypeScript interfaces from your [JSON serializers][oj_ser
 
 _Currently, this library targets [`oj_serializers`][oj_serializers] and `ActiveRecord` in [Rails] applications_.
 
-## Why? 🤔
-
-It's easy for the backend and the frontend to become out of sync.
-Traditionally, preventing bugs requires writing extensive integration tests.
-
-[TypeScript] is a great tool to catch this kind of bugs and mistakes, as it can
-detect incorrect usages and missing fields, but writing types manually is
-cumbersome, and they can become stale over time, giving a false sense of confidence.
-
-This library takes advantage of the declarative nature of serializer libraries
-such as [`active_model_serializers`][ams] and [`oj_serializers`][oj_serializers],
-extending them to allow embedding type information, as well as inferring types
-from the SQL schema when available.
-
-As a result, it's posible to easily detect mismatches between the backend and
-the frontend, as well as make the fields more discoverable and provide great
-autocompletion in the frontend, without having to manually write the types.
-
-## Features ⚡️
-
-- Start simple, no additional syntax required
-- Infers types from a related `ActiveRecord` model, using the SQL schema
-- Understands JS native types and how to map SQL columns: `string`, `boolean`, etc
-- Automatically types [associations](https://github.com/ElMassimo/oj_serializers#associations-dsl-), importing the generated types for the referenced serializers
-- Detects [conditional attributes](https://github.com/ElMassimo/oj_serializers#rendering-an-attribute-conditionally) and marks them as optional: `name?: string`
-- Fallback to a custom interface using `type_from`
-- Supports custom types and automatically adds the necessary imports
-
 ## Demo 🎬
 
 For a schema such as [this one](https://github.com/ElMassimo/types_from_serializers/blob/main/playground/vanilla/db/schema.rb):
@@ -121,6 +93,36 @@ export default interface Video {
 > **Note**
 >
 > This is the default configuration, but you have [full control][config] over generation.
+
+
+## Why? 🤔
+
+It's easy for the backend and the frontend to become out of sync.
+Traditionally, preventing bugs requires writing extensive integration tests.
+
+[TypeScript] is a great tool to catch this kind of bugs and mistakes, as it can
+detect incorrect usages and missing fields, but writing types manually is
+cumbersome, and they can become stale over time, giving a false sense of confidence.
+
+This library takes advantage of the declarative nature of serializer libraries
+such as [`active_model_serializers`][ams] and [`oj_serializers`][oj_serializers],
+extending them to allow embedding type information, as well as inferring types
+from the SQL schema when available.
+
+As a result, it's posible to easily detect mismatches between the backend and
+the frontend, as well as make the fields more discoverable and provide great
+autocompletion in the frontend, without having to manually write the types.
+
+## Features ⚡️
+
+- Start simple, no additional syntax required
+- Infers types from a related `ActiveRecord` model, using the SQL schema
+- Understands JS native types and how to map SQL columns: `string`, `boolean`, etc
+- Automatically types [associations](https://github.com/ElMassimo/oj_serializers#associations-dsl-), importing the generated types for the referenced serializers
+- Detects [conditional attributes](https://github.com/ElMassimo/oj_serializers#rendering-an-attribute-conditionally) and marks them as optional: `name?: string`
+- Fallback to a custom interface using `type_from`
+- Supports custom types and automatically adds the necessary imports
+
 
 ## Installation 💿
 

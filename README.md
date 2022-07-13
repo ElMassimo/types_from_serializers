@@ -162,7 +162,7 @@ detected.
 
 In most cases, you'll want to let `TypesFromSerializer` infer the types from the [SQL schema](https://github.com/ElMassimo/types_from_serializers/blob/main/playground/vanilla/db/schema.rb).
 
-If you are using `ActiveRecord`, The model related to the serializer will be inferred can be inferred from the serializer name:
+If you are using `ActiveRecord`, the model related to the serializer will be inferred can be inferred from the serializer name:
 
 ```ruby
 UserSerializer => User

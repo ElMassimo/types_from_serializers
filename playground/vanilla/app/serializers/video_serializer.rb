@@ -14,6 +14,6 @@ class VideoSerializer < BaseSerializer
   end
 
   attribute \
-  def untyped_field_example
+    def untyped_field_example
   end
 end

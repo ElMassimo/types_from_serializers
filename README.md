@@ -249,7 +249,7 @@ the generated code accordingly.
 To generate types manually, use the rake task:
 
 ```
-bundle exec rake types_from_serializer:generate
+bundle exec rake types_from_serializers:generate
 ```
 
 or if you prefer to do it manually from the console:

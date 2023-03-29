@@ -69,23 +69,15 @@ module TypesFromSerializers
 
       # Internal: A first pass of gathering types for the serializer fields.
       def typescript_metadata
-        SerializerMetadata.new(
+        @typescript_metadata ||= SerializerMetadata.new(
           model_name: _serializer_model_name,
           types_from: _serializer_types_from,
-          attributes: _attributes.map { |key, options|
-            typed_attrs = _typed_attributes.fetch(key, {})
+          attributes: prepare_attributes(sort_by: :name).map { |key, options|
+            options[:optional] ||= options.key?(:if)
             FieldMetadata.new(
-              **typed_attrs,
               name: key,
-              optional: typed_attrs[:optional] || options.key?(:if),
-            )
-          },
-          associations: _associations.map { |key, options|
-            FieldMetadata.new(
-              name: options.fetch(:root, key),
-              type: options.fetch(:serializer),
-              optional: options.key?(:if),
-              many: options.fetch(:write_method) == :write_many,
+              **typed_attrs,
+              **options.slice(:association, :serializer, :type, :optional),
             )
           },
         )

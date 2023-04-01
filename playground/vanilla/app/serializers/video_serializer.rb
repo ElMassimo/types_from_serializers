@@ -13,7 +13,6 @@ class VideoSerializer < BaseSerializer
     video.youtube_url
   end
 
-  attribute \
-    def untyped_field_example
+  attribute :untyped_field_example do
   end
 end

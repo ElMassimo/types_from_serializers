@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   s.files = Dir.glob("{lib,exe,templates}/**/*") + %w[README.md CHANGELOG.md LICENSE.txt]
   s.require_path = "lib"
 
-  s.add_dependency "railties", ">= 5.1", "< 8"
-  s.add_dependency "oj_serializers", "~> 1.0"
+  s.add_dependency "railties", ">= 5.1"
+  s.add_dependency "oj_serializers", "~> 2.0"
   s.add_dependency "listen", "~> 3.2"
 
   s.add_development_dependency "bundler", "~> 2"

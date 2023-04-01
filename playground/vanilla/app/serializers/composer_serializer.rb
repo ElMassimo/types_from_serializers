@@ -3,9 +3,6 @@ class ComposerSerializer < BaseSerializer
     :id,
     :first_name,
     :last_name,
-  )
-
-  typed_attributes(
-    name: :string,
+    name: {type: :string},
   )
 end

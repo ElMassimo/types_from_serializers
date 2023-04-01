@@ -187,9 +187,9 @@ class PersonSerializer < BaseSerializer
 When you want to be more strict than the SQL schema, or for attributes that are methods in the model, you can use:
 
 ```ruby
-  typed_attributes(
-    name: :string,
-    status: :Status, # a custom type in ~/types/Status.ts
+  attributes(
+    name: {type: :string},
+    status: {type: :Status}, # a custom type in ~/types/Status.ts
   )
 ```
 

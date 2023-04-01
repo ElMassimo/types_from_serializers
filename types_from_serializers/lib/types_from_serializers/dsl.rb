@@ -16,9 +16,9 @@ module TypesFromSerializer
       def object_as(name, model: nil, types_from: nil)
         # NOTE: Avoid taking memory for type information that won't be used.
         if Rails.env.development?
-          model ||= name.is_a?(Symbol) ? name : try(:_serializer_model_name)
-          define_method(:_serializer_model_name) { model || name }
-          define_method(:_serializer_types_from) { types_from } if types_from
+          model ||= name.is_a?(Symbol) ? name : try(:_serializer_model_name) || name
+          define_singleton_method(:_serializer_model_name) { model }
+          define_singleton_method(:_serializer_types_from) { types_from } if types_from
         end
 
         super(name)

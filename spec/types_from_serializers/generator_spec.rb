@@ -6,6 +6,7 @@ describe "Generator" do
   let(:sample_dir) { Rails.root.join("app/frontend/types/serializers") }
   let(:serializers) {
     %w[
+      Nested::AlbumSerializer
       VideoWithSongSerializer
       VideoSerializer
       SongSerializer
@@ -17,7 +18,7 @@ describe "Generator" do
   }
 
   def file_for(dir, name)
-    dir.join("#{name.chomp("Serializer")}.ts")
+    dir.join("#{name.chomp("Serializer").gsub("::", "/")}.ts")
   end
 
   def app_file_for(name)

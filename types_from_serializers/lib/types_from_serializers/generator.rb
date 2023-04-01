@@ -86,6 +86,7 @@ module TypesFromSerializers
     :name_from_serializer,
     :native_types,
     :sql_to_typescript_type_mapping,
+    :skip_serializer_if,
     keyword_init: true,
   ) do
     def custom_types_dir
@@ -294,8 +295,8 @@ module TypesFromSerializers
 
     # Internal: Checks if it should avoid generating an interface.
     def skip_serializer?(serializer)
-      serializer.name.include?("BaseSerializer") ||
-        serializer.name.in?(config.base_serializers) ||
+      serializer.name.in?(config.base_serializers) ||
+        config.skip_serializer_if.call(serializer) ||
         # NOTE: Ignore inline serializers.
         serializer.ts_name.include?("Serializer")
     end
@@ -353,6 +354,9 @@ module TypesFromSerializers
           "Record",
           "Date",
         ].to_set,
+
+        # Allows to avoid generating a serializer.
+        skip_serializer_if: ->(serializer) { false },
 
         # Maps SQL column types to TypeScript native and custom types.
         sql_to_typescript_type_mapping: {

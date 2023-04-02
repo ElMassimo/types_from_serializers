@@ -144,7 +144,7 @@ To get started, [create a `BaseSerializer`](https://github.com/ElMassimo/types_f
 # app/serializers/base_serializer.rb
 
 class BaseSerializer < Oj::Serializer
-  include TypesFromSerializer::DSL
+  include TypesFromSerializers::DSL
 end
 ```
 
@@ -160,7 +160,7 @@ detected.
 
 ### SQL Attributes
 
-In most cases, you'll want to let `TypesFromSerializer` infer the types from the [SQL schema](https://github.com/ElMassimo/types_from_serializers/blob/main/playground/vanilla/db/schema.rb).
+In most cases, you'll want to let `TypesFromSerializers` infer the types from the [SQL schema](https://github.com/ElMassimo/types_from_serializers/blob/main/playground/vanilla/db/schema.rb).
 
 If you are using `ActiveRecord`, the model related to the serializer will be inferred can be inferred from the serializer name:
 
@@ -257,7 +257,7 @@ or if you prefer to do it manually from the console:
 ```ruby
 require "types_from_serializers/generator"
 
-TypesFromSerializer.generate(force: true)
+TypesFromSerializers.generate(force: true)
 ```
 
 ### With [`vite-plugin-full-reload`][vite-plugin-full-reload] ⚡️

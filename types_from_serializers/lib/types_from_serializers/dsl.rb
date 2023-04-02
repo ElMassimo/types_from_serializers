@@ -3,7 +3,7 @@
 require "active_support/concern"
 
 # Internal: A DSL to specify types for serializer attributes.
-module TypesFromSerializer
+module TypesFromSerializers
   module DSL
     extend ActiveSupport::Concern
 

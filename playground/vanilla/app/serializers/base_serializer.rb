@@ -1,5 +1,5 @@
 class BaseSerializer < Oj::Serializer
-  include TypesFromSerializer::DSL
+  include TypesFromSerializers::DSL
 
   transform_keys :camelize
 end

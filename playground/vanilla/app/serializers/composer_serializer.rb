@@ -1,8 +1,8 @@
 class ComposerSerializer < BaseSerializer
   attributes(
     :id,
-    :first_name,
     :last_name,
+    :first_name,
     name: {type: :string},
   )
 end

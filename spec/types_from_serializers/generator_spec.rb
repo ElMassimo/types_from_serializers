@@ -14,6 +14,7 @@ describe "Generator" do
       ModelSerializer
       ComposerWithSongsSerializer
       ComposerSerializer
+      SnakeComposerSerializer
     ]
   }
 
@@ -61,13 +62,13 @@ describe "Generator" do
     # It generates one file per serializer.
     serializers.each do |name|
       output_file = output_file_for(name)
-      expect(output_file.read).to match_snapshot("interfaces_#{name}")
+      expect(output_file.read).to match_snapshot("interfaces_#{name}") # UPDATE_SNAPSHOTS="1" bin/rspec
     end
 
     # It generates an file that exports all interfaces.
     index_file = output_dir.join("index.ts")
     expect(index_file.exist?).to be true
-    expect(index_file.read).to match_snapshot("interfaces_index")
+    expect(index_file.read).to match_snapshot("interfaces_index") # UPDATE_SNAPSHOTS="1" bin/rspec
 
     # It does not render if generating again.
     TypesFromSerializers.generate

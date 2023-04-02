@@ -6,6 +6,8 @@ require "pathname"
 
 # Public: Automatically generates TypeScript interfaces for Ruby serializers.
 module TypesFromSerializers
+  DEFAULT_TRANSFORM_KEYS = ->(key) { key.camelize(:lower).chomp('?') }
+
   # Internal: Extensions that simplify the implementation of the generator.
   module SerializerRefinements
     refine String do
@@ -47,7 +49,10 @@ module TypesFromSerializers
         @ts_properties ||= begin
           types_from = try(:_serializer_types_from)
 
-          prepare_attributes(sort_by: :name)
+          prepare_attributes(
+            sort_by: TypesFromSerializers.config.sort_properties_by,
+            transform_keys: TypesFromSerializers.config.transform_keys || try(:_transform_keys) || DEFAULT_TRANSFORM_KEYS,
+          )
             .flat_map { |key, options|
               if options[:association] == :flat
                 options.fetch(:serializer).ts_properties
@@ -85,13 +90,14 @@ module TypesFromSerializers
     :custom_types_dir,
     :name_from_serializer,
     :native_types,
+    :sort_properties_by,
     :sql_to_typescript_type_mapping,
     :skip_serializer_if,
+    :transform_keys,
     keyword_init: true,
   ) do
-    def custom_types_dir
-      @relative_custom_types_dir ||= (@custom_types_dir || output_dir)
-        .relative_path_from(output_dir)
+    def relative_custom_types_dir
+      @relative_custom_types_dir ||= (custom_types_dir || output_dir.parent).relative_path_from(output_dir)
     end
 
     def unknown_type
@@ -118,15 +124,15 @@ module TypesFromSerializers
         .partition { |type| type.respond_to?(:ts_interface) }
 
       serializer_type_imports = association_serializers.map(&:ts_interface)
-        .map { |type| [type.name, type.import_path_from(filename)] }
+        .map { |type| [type.name, relative_path(type.pathname, pathname)] }
 
       custom_type_imports = attribute_types
         .flat_map { |type| extract_typescript_types(type.to_s) }
         .uniq
         .reject { |type| native_type?(type) }
         .map { |type|
-          type_path = TypesFromSerializers.config.custom_types_dir.join(type)
-          [type, type_path.relative_path_from(filename)]
+          type_path = TypesFromSerializers.config.relative_custom_types_dir.join(type)
+          [type, relative_path(type_path, pathname)]
         }
 
       (custom_type_imports + serializer_type_imports)
@@ -143,9 +149,13 @@ module TypesFromSerializers
 
   protected
 
-    # Internal: Name of the TypeScript file that defines the type for this serializer.
-    def import_path_from(importer_path)
-      path = Pathname.new(filename).relative_path_from(Pathname.new(importer_path).parent).to_s
+    def pathname
+      @pathname ||= Pathname.new(filename)
+    end
+
+    # Internal: Calculates a relative path that can be used in an import.
+    def relative_path(target_path, importer_path)
+      path = target_path.relative_path_from(importer_path.parent).to_s
       path.start_with?(".") ? path : "./#{path}"
     end
 
@@ -355,6 +365,9 @@ module TypesFromSerializers
           "Date",
         ].to_set,
 
+        # Allows to choose a different sort order, alphabetical by default.
+        sort_properties_by: :name,
+
         # Allows to avoid generating a serializer.
         skip_serializer_if: ->(serializer) { false },
 
@@ -370,6 +383,9 @@ module TypesFromSerializers
         }.tap do |types|
           types.default = :unknown
         end,
+
+        # Allows to transform keys, useful when converting objects client-side.
+        transform_keys: nil,
       )
     end
 

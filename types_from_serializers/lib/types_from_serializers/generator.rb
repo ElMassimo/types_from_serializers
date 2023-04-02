@@ -6,7 +6,7 @@ require "pathname"
 
 # Public: Automatically generates TypeScript interfaces for Ruby serializers.
 module TypesFromSerializers
-  DEFAULT_TRANSFORM_KEYS = ->(key) { key.camelize(:lower).chomp('?') }
+  DEFAULT_TRANSFORM_KEYS = ->(key) { key.camelize(:lower).chomp("?") }
 
   # Internal: Extensions that simplify the implementation of the generator.
   module SerializerRefinements

@@ -89,7 +89,7 @@ module TypesFromSerializers
     :output_dir,
     :custom_types_dir,
     :name_from_serializer,
-    :native_types,
+    :global_types,
     :sort_properties_by,
     :sql_to_typescript_type_mapping,
     :skip_serializer_if,
@@ -129,7 +129,7 @@ module TypesFromSerializers
       custom_type_imports = attribute_types
         .flat_map { |type| extract_typescript_types(type.to_s) }
         .uniq
-        .reject { |type| native_type?(type) }
+        .reject { |type| global_type?(type) }
         .map { |type|
           type_path = TypesFromSerializers.config.relative_custom_types_dir.join(type)
           [type, relative_path(type_path, pathname)]
@@ -166,8 +166,8 @@ module TypesFromSerializers
 
     # NOTE: Treat uppercase names as custom types.
     # Lowercase names would be native types, such as :string and :boolean.
-    def native_type?(type)
-      type[0] == type[0].downcase || TypesFromSerializers.config.native_types.include?(type)
+    def global_type?(type)
+      type[0] == type[0].downcase || TypesFromSerializers.config.global_types.include?(type)
     end
   end
 
@@ -359,7 +359,7 @@ module TypesFromSerializers
         name_from_serializer: ->(name) { name.delete_suffix("Serializer") },
 
         # Types that don't need to be imported in TypeScript.
-        native_types: [
+        global_types: [
           "Array",
           "Record",
           "Date",

@@ -78,7 +78,7 @@ end
 it would generate a TypeScript interface like:
 
 ```ts
-import type Song from '~/types/serializers/Song'
+import type Song from './Song'
 
 export default interface Video {
   id: number
@@ -206,7 +206,7 @@ For attributes defined in the serializer, use the `type` helper:
 
 > **Note**
 >
-> When specifying a type, [`serializer_attribute`](https://github.com/ElMassimo/oj_serializers#serializer_attributes) will be called automatically.
+> When specifying a type, [`attribute`](https://github.com/ElMassimo/oj_serializers#serializer_attributes) will be called automatically.
 
 ### Fallback Attributes
 
@@ -312,9 +312,15 @@ The dirs where the serializer files are located.
 
 ### `output_dir`
 
-_Default:_ `"app/frontend/types"`
+_Default:_ `"app/frontend/types/serializers"`
 
 The dir where the generated TypeScript interface files are placed.
+
+### `custom_types_dir`
+
+_Default:_ `"app/frontend/types"`
+
+The dir where the custom types are placed.
 
 ### `name_from_serializer`
 
@@ -323,13 +329,23 @@ _Default:_ `->(name) { name.delete_suffix("Serializer") }`
 A `Proc` that specifies how to convert the name of the serializer into the name
 of the generated TypeScript interface.
 
-### `native_types`
+### `global_types`
 
 _Default:_ `["Array", "Record", "Date"]`
 
 Types that don't need to be imported in TypeScript.
 
 You can extend this list as needed if you are using global definitions.
+
+### `skip_serializer_if`
+
+_Default:_ `->(serializer) { false }`
+
+You can provide a proc to avoid generating serializers.
+
+Along with `base_serializers`, this provides more fine-grained control in cases
+where a single backend supports several frontends, allowing to generate types
+separately.
 
 ### `sql_to_typescript_type_mapping`
 
@@ -354,6 +370,15 @@ config.sql_to_typescript_type_mapping.update(
 # untyped fields, so treat them as `any` instead of `unknown`.
 config.sql_to_typescript_type_mapping.default = :any
 ```
+
+### `transform_keys`
+
+_Default:_ `->(key) { key.camelize(:lower).chomp("?") }`
+
+You can provide a proc to transform property names.
+
+This library assumes that you will transform the casing client-side, but you can
+generate types preserving case by using `config.transform_keys = ->(key) { key }`.
 
 ## Contact ✉️
 

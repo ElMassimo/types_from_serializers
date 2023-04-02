@@ -13,7 +13,7 @@ gem "vite_rails"
 gem "js_from_routes", "~> 2.0.6"
 
 # A more efficient version of ActiveModelSerializers (https://github.com/ElMassimo/oj_serializers)
-gem "oj_serializers", path: "../../../oj_serializers"
+gem "oj_serializers"
 
 # Generate TypeScript interfaces from Ruby serializers.
 gem "types_from_serializers", path: "../.."

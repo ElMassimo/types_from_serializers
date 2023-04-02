@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
 
   s.add_dependency "railties", ">= 5.1"
-  s.add_dependency "oj_serializers", "~> 2.0"
+  s.add_dependency "oj_serializers", ">= 2.0.1", "~> 2.0"
   s.add_dependency "listen", "~> 3.2"
 
   s.add_development_dependency "bundler", "~> 2"

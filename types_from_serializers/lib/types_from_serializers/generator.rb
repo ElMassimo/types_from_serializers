@@ -6,36 +6,7 @@ require "pathname"
 
 # Public: Automatically generates TypeScript interfaces for Ruby serializers.
 module TypesFromSerializers
-  # Internal: The configuration for TypeScript generation.
-  Config = Struct.new(
-    :base_serializers,
-    :serializers_dirs,
-    :output_dir,
-    :name_from_serializer,
-    :native_types,
-    :sql_to_typescript_type_mapping,
-    keyword_init: true,
-  ) do
-    def unknown_type
-      sql_to_typescript_type_mapping.default
-    end
-  end
-
-  # Internal: The type metadata for a serializer.
-  SerializerMetadata = Struct.new(
-    :attributes,
-    :associations,
-    :model_name,
-    :types_from,
-    keyword_init: true,
-  )
-
-  # Internal: The type metadata for a serializer field.
-  FieldMetadata = Struct.new(:name, :type, :optional, :many, keyword_init: true) do
-    def typescript_name
-      name.to_s.camelize(:lower)
-    end
-  end
+  DEFAULT_TRANSFORM_KEYS = ->(key) { key.camelize(:lower).chomp("?") }
 
   # Internal: Extensions that simplify the implementation of the generator.
   module SerializerRefinements
@@ -58,91 +29,185 @@ module TypesFromSerializers
 
     refine Class do
       # Internal: Name of the TypeScript interface.
-      def typescript_interface_name
+      def ts_name
         TypesFromSerializers.config.name_from_serializer.call(name).tr_s(":", "")
       end
 
       # Internal: The base name of the TypeScript file to be written.
-      def typescript_interface_basename
+      def ts_filename
         TypesFromSerializers.config.name_from_serializer.call(name).gsub("::", "/")
       end
 
-      # Internal: A first pass of gathering types for the serializer fields.
-      def typescript_metadata
-        SerializerMetadata.new(
-          model_name: _serializer_model_name,
-          types_from: _serializer_types_from,
-          attributes: _attributes.map { |key, options|
-            typed_attrs = _typed_attributes.fetch(key, {})
-            FieldMetadata.new(
-              **typed_attrs,
-              name: key,
-              optional: typed_attrs[:optional] || options.key?(:if),
-            )
-          },
-          associations: _associations.map { |key, options|
-            FieldMetadata.new(
-              name: options.fetch(:root, key),
-              type: options.fetch(:serializer),
-              optional: options.key?(:if),
-              many: options.fetch(:write_method) == :write_many,
-            )
-          },
-        )
+      # Internal: The columns corresponding to the serializer model, if it's a
+      # record.
+      def model_columns
+        @model_columns ||= _serializer_model_name&.to_model.try(:columns_hash) || {}
       end
 
-      # Internal: Infers field types by checking the SQL columns for the model
-      # serialized, or from a TypeScript interface if provided.
-      def typescript_infer_types(metadata)
-        model = metadata.model_name&.to_model
-        interface = metadata.types_from
+      # Internal: The TypeScript properties of the serialzeir interface.
+      def ts_properties
+        @ts_properties ||= begin
+          types_from = try(:_serializer_types_from)
 
-        metadata.attributes.reject(&:type).each do |meta|
-          if model&.respond_to?(:columns_hash) && (column = model.columns_hash[meta.name.to_s])
-            meta[:type] = TypesFromSerializers.config.sql_to_typescript_type_mapping[column.type]
-            meta[:optional] ||= column.null
-          elsif interface
-            meta[:type] = "#{interface}['#{meta.typescript_name}']"
-          end
+          prepare_attributes(
+            sort_by: TypesFromSerializers.config.sort_properties_by,
+            transform_keys: TypesFromSerializers.config.transform_keys || try(:_transform_keys) || DEFAULT_TRANSFORM_KEYS,
+          )
+            .flat_map { |key, options|
+              if options[:association] == :flat
+                options.fetch(:serializer).ts_properties
+              else
+                Property.new(
+                  name: key,
+                  type: options[:serializer] || options[:type],
+                  optional: options[:optional] || options.key?(:if),
+                  multi: options[:association] == :many,
+                  column_name: options.fetch(:value_from),
+                ).tap do |property|
+                  property.infer_type_from(model_columns, types_from)
+                end
+              end
+            }
         end
       end
 
-      def typescript_imports(metadata)
-        assoc_imports = metadata.associations.map { |meta|
-          [meta.type.typescript_interface_name, "~/types/serializers/#{meta.type.typescript_interface_basename}"]
+      # Internal: A first pass of gathering types for the serializer attributes.
+      def ts_interface
+        @ts_interface ||= Interface.new(
+          name: ts_name,
+          filename: ts_filename,
+          properties: ts_properties,
+        )
+      end
+    end
+  end
+
+  # Internal: The configuration for TypeScript generation.
+  Config = Struct.new(
+    :base_serializers,
+    :serializers_dirs,
+    :output_dir,
+    :custom_types_dir,
+    :name_from_serializer,
+    :global_types,
+    :sort_properties_by,
+    :sql_to_typescript_type_mapping,
+    :skip_serializer_if,
+    :transform_keys,
+    keyword_init: true,
+  ) do
+    def relative_custom_types_dir
+      @relative_custom_types_dir ||= (custom_types_dir || output_dir.parent).relative_path_from(output_dir)
+    end
+
+    def unknown_type
+      sql_to_typescript_type_mapping.default
+    end
+  end
+
+  # Internal: Information to generate a TypeScript interface for a serializer.
+  Interface = Struct.new(
+    :name,
+    :filename,
+    :properties,
+    keyword_init: true,
+  ) do
+    using SerializerRefinements
+
+    def inspect
+      to_h.inspect
+    end
+
+    # Internal: Returns a list of imports for types used in this interface.
+    def used_imports
+      association_serializers, attribute_types = properties.map(&:type).compact.uniq
+        .partition { |type| type.respond_to?(:ts_interface) }
+
+      serializer_type_imports = association_serializers.map(&:ts_interface)
+        .map { |type| [type.name, relative_path(type.pathname, pathname)] }
+
+      custom_type_imports = attribute_types
+        .flat_map { |type| extract_typescript_types(type.to_s) }
+        .uniq
+        .reject { |type| global_type?(type) }
+        .map { |type|
+          type_path = TypesFromSerializers.config.relative_custom_types_dir.join(type)
+          [type, relative_path(type_path, pathname)]
         }
 
-        attr_imports = metadata.attributes
-          .flat_map { |meta| extract_typescript_types(meta.type.to_s) }
-          .uniq
-          .reject { |type| typescript_native_type?(type) }
-          .map { |type|
-            [type, "~/types/#{type}"]
-          }
+      (custom_type_imports + serializer_type_imports)
+        .map { |interface, filename| "import type #{interface} from '#{filename}'\n" }
+    end
 
-        (assoc_imports + attr_imports).uniq.map { |interface, filename|
-          "import type #{interface} from '#{filename}'\n"
-        }.uniq
-      end
-
-      # Internal: Extracts any types inside generics or array types.
-      def extract_typescript_types(type)
-        type.split(/[<>\[\],\s|]+/)
-      end
-
-      # NOTE: Treat uppercase names as custom types.
-      # Lowercase names would be native types, such as :string and :boolean.
-      def typescript_native_type?(type)
-        type[0] == type[0].downcase || TypesFromSerializers.config.native_types.include?(type)
-      end
-
-      def typescript_fields(metadata)
-        (metadata.attributes + metadata.associations).map { |meta|
-          type = meta.type.is_a?(Class) ? meta.type.typescript_interface_name : meta.type || TypesFromSerializers.config.unknown_type
-          type = meta.many ? "#{type}[]" : type
-          "  #{meta.typescript_name}#{"?" if meta.optional}: #{type}"
+    def as_typescript
+      <<~TS
+        interface #{name} {
+          #{properties.index_by(&:name).values.map(&:as_typescript).join("\n  ")}
         }
+      TS
+    end
+
+  protected
+
+    def pathname
+      @pathname ||= Pathname.new(filename)
+    end
+
+    # Internal: Calculates a relative path that can be used in an import.
+    def relative_path(target_path, importer_path)
+      path = target_path.relative_path_from(importer_path.parent).to_s
+      path.start_with?(".") ? path : "./#{path}"
+    end
+
+    # Internal: Extracts any types inside generics or array types.
+    def extract_typescript_types(type)
+      type.split(/[<>\[\],\s|]+/)
+    end
+
+    # NOTE: Treat uppercase names as custom types.
+    # Lowercase names would be native types, such as :string and :boolean.
+    def global_type?(type)
+      type[0] == type[0].downcase || TypesFromSerializers.config.global_types.include?(type)
+    end
+  end
+
+  # Internal: The type metadata for a serializer attribute.
+  Property = Struct.new(
+    :name,
+    :type,
+    :optional,
+    :multi,
+    :column_name,
+    keyword_init: true,
+  ) do
+    using SerializerRefinements
+
+    def inspect
+      to_h.inspect
+    end
+
+    # Internal: Infers the property's type by checking a corresponding SQL
+    # column, or falling back to a TypeScript interface if provided.
+    def infer_type_from(columns_hash, ts_interface)
+      if type
+        type
+      elsif (column = columns_hash[column_name.to_s])
+        self.multi = true if column.try(:array)
+        self.optional = true if column.null && !column.default
+        self.type = TypesFromSerializers.config.sql_to_typescript_type_mapping[column.type]
+      elsif ts_interface
+        self.type = "#{ts_interface}['#{name}']"
       end
+    end
+
+    def as_typescript
+      type_str = if type.respond_to?(:ts_name)
+        type.ts_name
+      else
+        type || TypesFromSerializers.config.unknown_type
+      end
+
+      "#{name}#{"?" if optional}: #{type_str}#{"[]" if multi}"
     end
   end
 
@@ -222,12 +287,10 @@ module TypesFromSerializers
 
     # Internal: Defines a TypeScript interface for the serializer.
     def generate_interface_for(serializer)
-      metadata = serializer.typescript_metadata
-      filename = serializer.typescript_interface_basename
+      interface = serializer.ts_interface
 
-      write_if_changed(filename: filename, cache_key: metadata.inspect) {
-        serializer.typescript_infer_types(metadata)
-        serializer_interface_content(serializer, metadata)
+      write_if_changed(filename: interface.filename, cache_key: interface.inspect) {
+        serializer_interface_content(interface)
       }
     end
 
@@ -241,8 +304,11 @@ module TypesFromSerializers
     end
 
     # Internal: Checks if it should avoid generating an interface.
-    def skip_serializer?(name)
-      name.include?("BaseSerializer") || name.in?(config.base_serializers)
+    def skip_serializer?(serializer)
+      serializer.name.in?(config.base_serializers) ||
+        config.skip_serializer_if.call(serializer) ||
+        # NOTE: Ignore inline serializers.
+        serializer.ts_name.include?("Serializer")
     end
 
     # Internal: Returns an object compatible with FileUpdateChecker.
@@ -273,7 +339,7 @@ module TypesFromSerializers
         .flat_map(&:descendants)
         .uniq
         .sort_by(&:name)
-        .reject { |s| skip_serializer?(s.name) }
+        .reject { |s| skip_serializer?(s) }
     rescue NameError
       raise ArgumentError, "Please ensure all your serializers extend BaseSerializer, or configure `config.base_serializers`."
     end
@@ -293,11 +359,17 @@ module TypesFromSerializers
         name_from_serializer: ->(name) { name.delete_suffix("Serializer") },
 
         # Types that don't need to be imported in TypeScript.
-        native_types: [
+        global_types: [
           "Array",
           "Record",
           "Date",
         ].to_set,
+
+        # Allows to choose a different sort order, alphabetical by default.
+        sort_properties_by: :name,
+
+        # Allows to avoid generating a serializer.
+        skip_serializer_if: ->(serializer) { false },
 
         # Maps SQL column types to TypeScript native and custom types.
         sql_to_typescript_type_mapping: {
@@ -311,6 +383,9 @@ module TypesFromSerializers
         }.tap do |types|
           types.default = :unknown
         end,
+
+        # Allows to transform keys, useful when converting objects client-side.
+        transform_keys: nil,
       )
     end
 
@@ -335,18 +410,18 @@ module TypesFromSerializers
       <<~TS
         //
         // DO NOT MODIFY: This file was automatically generated by TypesFromSerializers.
-        #{serializers.map { |s| "export type { default as #{s.typescript_interface_name} } from './#{s.typescript_interface_basename}'" }.join("\n")}
+        #{serializers.map { |s|
+          "export type { default as #{s.ts_name} } from './#{s.ts_filename}'"
+        }.join("\n")}
       TS
     end
 
-    def serializer_interface_content(serializer, metadata)
+    def serializer_interface_content(interface)
       <<~TS
         //
         // DO NOT MODIFY: This file was automatically generated by TypesFromSerializers.
-        #{serializer.typescript_imports(metadata).join}
-        export default interface #{serializer.typescript_interface_name} {
-        #{serializer.typescript_fields(metadata).join("\n")}
-        }
+        #{interface.used_imports.join}
+        export default #{interface.as_typescript}
       TS
     end
 

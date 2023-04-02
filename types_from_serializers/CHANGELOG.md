@@ -1,3 +1,16 @@
+## [2.0.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@0.1.2...types_from_serializers@2.0.0) (2023-04-02)
+
+This version adds support for `oj_serializers-2.0.2`, supporting all changes in:
+
+- https://github.com/ElMassimo/oj_serializers/pull/9
+
+### Features ✨
+
+- Now keys will match the [`transform_keys`](https://github.com/ElMassimo/oj_serializers#transforming-attribute-keys-) configuration instead of always being camelized
+- Support for [`flat_one`](https://github.com/ElMassimo/oj_serializers#composing-serializers-)
+- Use relative paths for imports to make the output configuration more flexible
+- Define the order of properties in the interface with `sort_properties_by`
+
 ## [0.1.3](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@0.1.2...types_from_serializers@0.1.3) (2022-07-12)
 
 

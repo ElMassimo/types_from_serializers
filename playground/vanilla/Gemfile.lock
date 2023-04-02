@@ -1,10 +1,10 @@
 PATH
-  remote: ../../types_from_serializers
+  remote: ../..
   specs:
-    types_from_serializers (0.1.2)
+    types_from_serializers (2.0.0)
       listen (~> 3.2)
-      oj_serializers (~> 1.0)
-      railties (>= 5.1, < 8)
+      oj_serializers (~> 2.0, >= 2.0.2)
+      railties (>= 5.1)
 
 GEM
   remote: https://rubygems.org/
@@ -98,9 +98,9 @@ GEM
     nokogiri (1.13.6)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    oj (3.13.16)
-    oj_serializers (1.0.0)
-      oj (>= 3.8.0)
+    oj (3.14.2)
+    oj_serializers (2.0.2)
+      oj (>= 3.14.0)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)

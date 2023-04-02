@@ -36,8 +36,11 @@ class TypesFromSerializers::Railtie < Rails::Railtie
       desc "Generates TypeScript interfaces for each serializer in the app."
       task generate: :environment do
         require_relative "generator"
+        start_time = Time.zone.now
+        print "Generating TypeScript interfaces..."
         serializers = TypesFromSerializers.generate(force: true)
-        puts "Generated TypeScript interfaces for #{serializers.size} serializers:"
+        puts "completed in #{(Time.zone.now - start_time).round(2)} seconds.\n"
+        puts "Found #{serializers.size} serializers:"
         puts serializers.map { |s| "\t#{s.name}" }.join("\n")
       end
     end

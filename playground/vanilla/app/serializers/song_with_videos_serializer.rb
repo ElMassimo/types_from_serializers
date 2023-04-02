@@ -1,3 +1,3 @@
 class SongWithVideosSerializer < SongSerializer
-  has_many :video_clips, root: :videos, serializer: VideoSerializer
+  has_many :video_clips, as: :videos, serializer: VideoSerializer
 end

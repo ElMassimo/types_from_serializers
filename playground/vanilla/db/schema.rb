@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2022_07_09_151259) do
-
   create_table "composers", force: :cascade do |t|
     t.text "first_name"
     t.text "last_name"

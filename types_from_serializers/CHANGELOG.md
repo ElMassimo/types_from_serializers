@@ -1,3 +1,12 @@
+## [2.0.1](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.0.0...types_from_serializers@2.0.1) (2023-04-03)
+
+
+### Bug Fixes
+
+* `add_attribute` now expects keyword arguments ([154b49e](https://github.com/ElMassimo/types_from_serializers/commit/154b49e463e3e6533b21520b7f0d699e6f0f47ba))
+
+
+
 ## [2.0.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@0.1.2...types_from_serializers@2.0.0) (2023-04-02)
 
 This version adds support for `oj_serializers-2.0.2`, supporting all changes in:

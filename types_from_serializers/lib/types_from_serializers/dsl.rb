@@ -37,9 +37,8 @@ module TypesFromSerializers
       # Override: Remove unnecessary options in production, types are only
       # used when generating code in development.
       unless Rails.env.development?
-        def add_attribute(name, options)
-          options.except!(:type, :optional)
-          super
+        def add_attribute(name, type: nil, optional: nil, **options)
+          super(name, **options)
         end
       end
     end

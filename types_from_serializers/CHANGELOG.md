@@ -1,3 +1,12 @@
+## [2.0.2](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.0.1...types_from_serializers@2.0.2) (2023-04-05)
+
+
+### Features
+
+* map citext from PostgreSQL to string ([#7](https://github.com/ElMassimo/types_from_serializers/issues/7)) ([d8c6848](https://github.com/ElMassimo/types_from_serializers/commit/d8c6848b99b0f4ba3770871f491755c229a2c4b0))
+
+
+
 ## [2.0.1](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.0.0...types_from_serializers@2.0.1) (2023-04-03)
 
 

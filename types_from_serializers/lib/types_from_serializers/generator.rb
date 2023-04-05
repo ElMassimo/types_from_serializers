@@ -380,6 +380,7 @@ module TypesFromSerializers
           integer: :number,
           string: :string,
           text: :string,
+          citext: :string,
         }.tap do |types|
           types.default = :unknown
         end,

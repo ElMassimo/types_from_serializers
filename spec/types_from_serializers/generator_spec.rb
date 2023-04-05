@@ -79,4 +79,14 @@ describe "Generator" do
     expect_generator.to generate_serializers.exactly(serializers.size).times
     expect { Rake::Task["types_from_serializers:generate"].invoke }.not_to raise_error
   end
+
+  describe "types mapping" do
+    it "maps citext type from SQL to string type in TypeScript" do
+      db_type = :citext
+
+      ts_type = TypesFromSerializers.config.sql_to_typescript_type_mapping[db_type]
+
+      expect(ts_type).to eq(:string)
+    end
+  end
 end

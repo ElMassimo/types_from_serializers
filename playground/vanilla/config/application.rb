@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 
 begin
   require "pry-byebug"
-rescue LoadError
+rescue LoadError, NameError
 end
 
 module SampleApp

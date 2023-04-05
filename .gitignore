@@ -51,3 +51,6 @@ selenium-server.log
 
 docs/pnpm-lock.yaml
 docs
+
+# Ruby version
+.ruby-version

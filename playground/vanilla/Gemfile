@@ -26,7 +26,8 @@ gem "inertia_rails", ">= 1.2.2"
 
 group :development, :test do
   gem "listen", "~> 3.7"
-  gem "pry-byebug"
+  gem "debug"
+  gem "pry-byebug", require: false
   gem "rspec-rails"
   gem "rails-controller-testing"
 end

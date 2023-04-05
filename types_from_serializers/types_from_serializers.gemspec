@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.add_dependency "listen", "~> 3.2"
 
   s.add_development_dependency "bundler", "~> 2"
-  s.add_development_dependency "pry-byebug", "~> 3.9"
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec-given", "~> 3.8"
   s.add_development_dependency "rspec-snapshot"

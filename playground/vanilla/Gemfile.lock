@@ -69,6 +69,9 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.2.2)
     crass (1.0.6)
+    debug (1.7.2)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     diff-lcs (1.5.0)
     dry-cli (1.0.0)
     erubi (1.12.0)
@@ -79,6 +82,9 @@ GEM
       concurrent-ruby (~> 1.0)
     inertia_rails (2.0.0)
       rails (>= 5)
+    io-console (0.6.0)
+    irb (1.6.3)
+      reline (>= 0.3.0)
     js_from_routes (2.0.6)
       railties (>= 5.1, < 8)
     listen (3.7.1)
@@ -149,6 +155,8 @@ GEM
     rb-fsevent (0.11.1)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    reline (0.3.3)
+      io-console (~> 0.5)
     rspec-core (3.11.0)
       rspec-support (~> 3.11.0)
     rspec-expectations (3.11.0)
@@ -194,6 +202,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  debug
   inertia_rails (>= 1.2.2)
   js_from_routes (~> 2.0.6)
   listen (~> 3.7)

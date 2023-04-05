@@ -12,7 +12,7 @@ require "rspec/given"
 
 begin
   require "pry-byebug"
-rescue LoadError, NameError
+rescue LoadError
 end
 
 $LOAD_PATH.push File.expand_path("../playground", __dir__)

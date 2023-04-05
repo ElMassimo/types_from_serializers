@@ -7,7 +7,10 @@ require "active_record/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require "pry-byebug" rescue nil
+begin
+  require "pry-byebug"
+rescue LoadError
+end
 
 module SampleApp
   class Application < Rails::Application

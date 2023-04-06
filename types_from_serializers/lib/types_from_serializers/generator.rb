@@ -94,6 +94,7 @@ module TypesFromSerializers
     :sql_to_typescript_type_mapping,
     :skip_serializer_if,
     :transform_keys,
+    :declaration_file,
     keyword_init: true,
   ) do
     def relative_custom_types_dir
@@ -387,6 +388,9 @@ module TypesFromSerializers
 
         # Allows to transform keys, useful when converting objects client-side.
         transform_keys: nil,
+
+        # Sets whether to output standard ts file, or a declaration file
+        declaration_file: false,
       )
     end
 
@@ -395,7 +399,8 @@ module TypesFromSerializers
     #
     # Yields to receive the rendered file content when it needs to.
     def write_if_changed(filename:, cache_key:)
-      filename = config.output_dir.join("#{filename}.ts")
+      extenstion = TypesFromSerializers.config.declaration_file ? "d.ts" : "ts"
+      filename = config.output_dir.join("#{filename}.#{extenstion}")
       FileUtils.mkdir_p(filename.dirname)
       cache_key_comment = "// TypesFromSerializers CacheKey #{Digest::MD5.hexdigest(cache_key)}\n"
       File.open(filename, "a+") { |file|

@@ -51,27 +51,49 @@ describe "Generator" do
     output_dir.rmtree if output_dir.exist?
   end
 
-  # NOTE: We do a manual snapshot test for now, more tests coming in the future.
-  it "generates the files as expected" do
-    expect_generator.to generate_serializers.exactly(serializers.size).times
-    TypesFromSerializers.generate
+  context "with default config options" do
+    # NOTE: We do a manual snapshot test for now, more tests coming in the future.
+    it "generates the files as expected" do
+      expect_generator.to generate_serializers.exactly(serializers.size).times
+      TypesFromSerializers.generate
 
-    # It does not generate routes that don't have `export: true`.
-    expect(output_file_for("BaseSerializer").exist?).to be false
+      # It does not generate routes that don't have `export: true`.
+      expect(output_file_for("BaseSerializer").exist?).to be false
 
-    # It generates one file per serializer.
-    serializers.each do |name|
-      output_file = output_file_for(name)
-      expect(output_file.read).to match_snapshot("interfaces_#{name}") # UPDATE_SNAPSHOTS="1" bin/rspec
+      # It generates one file per serializer.
+      serializers.each do |name|
+        output_file = output_file_for(name)
+        expect(output_file.read).to match_snapshot("interfaces_#{name.gsub("::", "__")}") # UPDATE_SNAPSHOTS="1" bin/rspec
+      end
+
+      # It generates an file that exports all interfaces.
+      index_file = output_dir.join("index.ts")
+      expect(index_file.exist?).to be true
+      expect(index_file.read).to match_snapshot("interfaces_index") # UPDATE_SNAPSHOTS="1" bin/rspec
+
+      # It does not render if generating again.
+      TypesFromSerializers.generate
     end
+  end
 
-    # It generates an file that exports all interfaces.
-    index_file = output_dir.join("index.ts")
-    expect(index_file.exist?).to be true
-    expect(index_file.read).to match_snapshot("interfaces_index") # UPDATE_SNAPSHOTS="1" bin/rspec
+  context "with namespace config option" do
+    it "generates the files as expected" do
+      TypesFromSerializers.config do |config|
+        config.namespace = "Schema"
+      end
 
-    # It does not render if generating again.
-    TypesFromSerializers.generate
+      expect_generator.to generate_serializers.exactly(serializers.size).times
+      TypesFromSerializers.generate
+
+      # It does not generate routes that don't have `export: true`.
+      expect(output_file_for("BaseSerializer").exist?).to be false
+
+      # It generates one file per serializer.
+      serializers.each do |name|
+        output_file = output_file_for(name)
+        expect(output_file.read).to match_snapshot("namespace_interfaces_#{name}") # UPDATE_SNAPSHOTS="1" bin/rspec
+      end
+    end
   end
 
   it "has a rake task available" do

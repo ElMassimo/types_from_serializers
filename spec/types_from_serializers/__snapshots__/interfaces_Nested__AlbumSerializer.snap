@@ -4,7 +4,7 @@
 import type { AnyModel } from '../../AnyModel'
 import type { Song } from '../Song'
 
-export interface NestedAlbum {
+export default interface NestedAlbum {
   id: AnyModel['id']
   title: AnyModel['title']
   tracks: Song[]

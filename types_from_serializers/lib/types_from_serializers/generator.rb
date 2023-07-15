@@ -137,7 +137,7 @@ module TypesFromSerializers
         }
 
       (custom_type_imports + serializer_type_imports)
-        .map { |interface, filename| "import type { #{interface} } from '#{filename}'\n" }
+        .map { |interface, filename| "import type #{interface} from '#{filename}'\n" }
     end
 
     def as_typescript

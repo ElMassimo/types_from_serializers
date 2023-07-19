@@ -272,9 +272,7 @@ module TypesFromSerializers
       @force_generation = force
       config.output_dir.rmtree if force && config.output_dir.exist?
 
-      cache_key = all_serializer_files.map { |file| file.delete_prefix(root.to_s) }.join
-
-      generate_index_file(cache_key)
+      generate_index_file unless config.namespace
 
       loaded_serializers.each do |serializer|
         generate_interface_for(serializer)
@@ -300,13 +298,12 @@ module TypesFromSerializers
     end
 
     # Internal: Allows to import all serializer types from a single file.
-    def generate_index_file(cache_key)
-      load_serializers(all_serializer_files)
-      unless config.namespace
-        write_if_changed(filename: "index", cache_key: cache_key) {
-          serializers_index_content(loaded_serializers)
-        }
-      end
+    def generate_index_file
+      cache_key = all_serializer_files.map { |file| file.delete_prefix(root.to_s) }.join
+      write_if_changed(filename: "index", cache_key: cache_key) {
+        load_serializers(all_serializer_files)
+        serializers_index_content(loaded_serializers)
+      }
     end
 
     # Internal: Checks if it should avoid generating an interface.

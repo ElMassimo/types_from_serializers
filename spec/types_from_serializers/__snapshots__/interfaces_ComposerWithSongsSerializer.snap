@@ -10,4 +10,3 @@ export default interface ComposerWithSongs {
   name: string
   songs: Model[]
 }
-

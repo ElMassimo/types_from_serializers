@@ -12,4 +12,3 @@ export default interface VideoWithSong {
   youtubeId?: string
   youtubeUrl?: string
 }
-

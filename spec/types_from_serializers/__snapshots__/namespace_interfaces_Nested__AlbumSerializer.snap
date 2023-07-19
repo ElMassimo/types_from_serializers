@@ -4,9 +4,12 @@
 import type AnyModel from '../../AnyModel'
 import type Song from '../Song'
 
-export default interface NestedAlbum {
-  id: AnyModel['id']
-  title: AnyModel['title']
-  tracks: Song[]
+declare global {
+  namespace Schema {
+    interface NestedAlbum {
+      id: AnyModel['id']
+      title: AnyModel['title']
+      tracks: Song[]
+    }
+  }
 }
-

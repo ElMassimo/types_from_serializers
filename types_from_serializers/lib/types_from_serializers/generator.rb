@@ -272,7 +272,11 @@ module TypesFromSerializers
       @force_generation = force
       config.output_dir.rmtree if force && config.output_dir.exist?
 
-      generate_index_file unless config.namespace
+      if config.namespace
+        load_serializers(all_serializer_files) if force
+      else
+        generate_index_file
+      end
 
       loaded_serializers.each do |serializer|
         generate_interface_for(serializer)

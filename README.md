@@ -297,6 +297,13 @@ if Rails.env.development?
 end
 ```
 
+### `namespace`
+
+_Default:_ `nil`
+
+Allows to specify a TypeScript namespace and generate `.d.ts` to make types
+available globally, avoiding the need to import types explicitly.
+
 ### `base_serializers`
 
 _Default:_ `["BaseSerializer"]`

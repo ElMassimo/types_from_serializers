@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.0.2...types_from_serializers@2.1.0) (2023-07-19)
+
+
+### Features
+
+* add `namespace` option to generate `.d.ts` files ([#9](https://github.com/ElMassimo/types_from_serializers/issues/9)) ([6f67b1a](https://github.com/ElMassimo/types_from_serializers/commit/6f67b1ad9283868e8e3325042645bceccc85b047))
+
+
+
 ## [2.0.2](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.0.1...types_from_serializers@2.0.2) (2023-04-05)
 
 

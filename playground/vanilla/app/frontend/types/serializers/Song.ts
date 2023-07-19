@@ -8,4 +8,3 @@ export default interface Song {
   composer: Composer
   title?: string
 }
-

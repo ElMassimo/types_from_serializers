@@ -9,4 +9,3 @@ export default interface NestedAlbum {
   title: AnyModel['title']
   tracks: Song[]
 }
-

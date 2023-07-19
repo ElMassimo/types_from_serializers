@@ -7,4 +7,3 @@ export default interface Model {
   id: AnyModel['id']
   title: AnyModel['title']
 }
-

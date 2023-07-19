@@ -10,4 +10,3 @@ export default interface SongWithVideos {
   title?: string
   videos: Video[]
 }
-

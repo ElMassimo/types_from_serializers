@@ -8,4 +8,3 @@ export default interface Composer {
   lastName?: string
   name: string
 }
-

@@ -10,4 +10,3 @@ export default interface Video {
   youtubeId?: string
   youtubeUrl?: string
 }
-

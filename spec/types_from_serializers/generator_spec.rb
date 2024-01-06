@@ -102,10 +102,10 @@ describe "Generator" do
     end
   end
 
-  context "with null optionality config option" do
+  context "with infer null optionality config option" do
     it "generates the files as expected" do
       TypesFromSerializers.config do |config|
-        config.null_optionality = true
+        config.infer_null_optionality = true
       end
 
       expect_generator.to generate_serializers.exactly(serializers.size).times
@@ -121,7 +121,7 @@ describe "Generator" do
       # It generates one file per serializer.
       serializers.each do |name|
         output_file = output_file_for(name, "d.ts")
-        expect(output_file.read).to match_snapshot("null_optionality_interfaces_#{name.gsub("::", "__")}") # UPDATE_SNAPSHOTS="1" bin/rspec
+        expect(output_file.read).to match_snapshot("infer_null_optionality_interfaces_#{name.gsub("::", "__")}") # UPDATE_SNAPSHOTS="1" bin/rspec
       end
     end
   end

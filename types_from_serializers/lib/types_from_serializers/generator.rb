@@ -56,7 +56,7 @@ module TypesFromSerializers
             .flat_map { |key, options|
               if options[:association] == :flat
                 options.fetch(:serializer).ts_properties.map do |property|
-                  if options.key?(:if)
+                  if TypesFromSerializers.config.infer_null_optionality && options.key?(:if)
                     # Attributes from a conditional flat_one could be undefined
                     # If the optionality as null can be determined, then we can
                     # serialize as a union type with undefined or null.
@@ -110,7 +110,7 @@ module TypesFromSerializers
     :skip_serializer_if,
     :transform_keys,
     :namespace,
-    :null_optionality,
+    :infer_null_optionality,
     keyword_init: true,
   ) do
     def relative_custom_types_dir
@@ -210,7 +210,7 @@ module TypesFromSerializers
       if type
         type
       elsif (column = columns_hash[column_name.to_s])
-        null_optional_type = if TypesFromSerializers.config.null_optionality
+        null_optional_type = if TypesFromSerializers.config.infer_null_optionality
           :null
         else
           true
@@ -430,7 +430,7 @@ module TypesFromSerializers
         namespace: nil,
 
         # Allows generating properties with null union types for optional attributes, disabled by default.
-        null_optionality: false,
+        infer_null_optionality: false,
       )
     end
 

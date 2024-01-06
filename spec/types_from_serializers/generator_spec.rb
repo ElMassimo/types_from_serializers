@@ -7,6 +7,8 @@ describe "Generator" do
   let(:serializers) {
     %w[
       Nested::AlbumSerializer
+      Nested::ConditionalAlbumSerializer
+      Nested::ConditionalSongAlbumSerializer
       VideoWithSongSerializer
       VideoSerializer
       SongSerializer
@@ -96,6 +98,30 @@ describe "Generator" do
       serializers.each do |name|
         output_file = output_file_for(name, "d.ts")
         expect(output_file.read).to match_snapshot("namespace_interfaces_#{name.gsub("::", "__")}") # UPDATE_SNAPSHOTS="1" bin/rspec
+      end
+    end
+  end
+
+  context "with null optionality config option" do
+    it "generates the files as expected" do
+      TypesFromSerializers.config do |config|
+        config.null_optionality = true
+      end
+
+      expect_generator.to generate_serializers.exactly(serializers.size).times
+      TypesFromSerializers.generate
+
+      # It does not generate routes that don't have `export: true`.
+      expect(output_file_for("BaseSerializer", "d.ts").exist?).to be false
+
+      # It does not generate an index file
+      index_file = output_dir.join("index.ts")
+      expect(index_file.exist?).to be false
+
+      # It generates one file per serializer.
+      serializers.each do |name|
+        output_file = output_file_for(name, "d.ts")
+        expect(output_file.read).to match_snapshot("null_optionality_interfaces_#{name.gsub("::", "__")}") # UPDATE_SNAPSHOTS="1" bin/rspec
       end
     end
   end

@@ -55,7 +55,22 @@ module TypesFromSerializers
           )
             .flat_map { |key, options|
               if options[:association] == :flat
-                options.fetch(:serializer).ts_properties
+                options.fetch(:serializer).ts_properties.map do |property|
+                  if options.key?(:if)
+                    # Attributes from a conditional flat_one could be undefined
+                    # If the optionality as null can be determined, then we can
+                    # serialize as a union type with undefined or null.
+                    # If it can't be determined (for example when using custom types)
+                    # then just assume undefined.
+                    property.optional = if property.optional == :null
+                      :undefined_or_null
+                    else
+                      true
+                    end
+                  end
+
+                  property
+                end
               else
                 Property.new(
                   name: key,
@@ -95,6 +110,7 @@ module TypesFromSerializers
     :skip_serializer_if,
     :transform_keys,
     :namespace,
+    :null_optionality,
     keyword_init: true,
   ) do
     def relative_custom_types_dir
@@ -194,8 +210,14 @@ module TypesFromSerializers
       if type
         type
       elsif (column = columns_hash[column_name.to_s])
+        null_optional_type = if TypesFromSerializers.config.null_optionality
+          :null
+        else
+          true
+        end
+
         self.multi = true if column.try(:array)
-        self.optional = true if column.null && !column.default
+        self.optional = null_optional_type if column.null && !column.default
         self.type = TypesFromSerializers.config.sql_to_typescript_type_mapping[column.type]
       elsif ts_interface
         self.type = "#{ts_interface}['#{name}']"
@@ -209,7 +231,16 @@ module TypesFromSerializers
         type || TypesFromSerializers.config.unknown_type
       end
 
-      "#{name}#{"?" if optional}: #{type_str}#{"[]" if multi}"
+      if [:null, :undefined_or_null].include?(optional)
+        type_str = "#{type_str} | null"
+
+        # Need to wrap in parens for array types when null is included as a union type.
+        if multi
+          type_str = "(#{type_str})"
+        end
+      end
+
+      "#{name}#{"?" if [true, :undefined_or_null].include?(optional)}: #{type_str}#{"[]" if multi}"
     end
   end
 
@@ -397,6 +428,9 @@ module TypesFromSerializers
 
         # Allows scoping typescript definitions to a namespace
         namespace: nil,
+
+        # Allows generating properties with null union types for optional attributes, disabled by default.
+        null_optionality: false,
       )
     end
 

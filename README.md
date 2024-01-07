@@ -258,7 +258,7 @@ youtubeUrl: string | null
 
 By default, the library will infer only `option: true` from the SQL schema and for conditional attributes.
 If you would like to allow the library to generate optional properties supporting `null` types, you can enable
-the `null_optionality` configuration option.
+the `infer_null_optionality` configuration option.
 
 ## Generation 📜
 
@@ -414,7 +414,7 @@ You can provide a proc to transform property names.
 This library assumes that you will transform the casing client-side, but you can
 generate types preserving case by using `config.transform_keys = ->(key) { key }`.
 
-### `null_optionality`
+### `infer_null_optionality`
 
 __Default:_ `false`
 

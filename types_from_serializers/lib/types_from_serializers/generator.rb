@@ -44,7 +44,7 @@ module TypesFromSerializers
         @model_columns ||= _serializer_model_name&.to_model.try(:columns_hash) || {}
       end
 
-      # Internal: The TypeScript properties of the serialzeir interface.
+      # Internal: The TypeScript properties of the serializer interface.
       def ts_properties
         @ts_properties ||= begin
           types_from = try(:_serializer_types_from)
@@ -55,22 +55,7 @@ module TypesFromSerializers
           )
             .flat_map { |key, options|
               if options[:association] == :flat
-                options.fetch(:serializer).ts_properties.map do |property|
-                  if TypesFromSerializers.config.infer_null_optionality && options.key?(:if)
-                    # Attributes from a conditional flat_one could be undefined
-                    # If the optionality as null can be determined, then we can
-                    # serialize as a union type with undefined or null.
-                    # If it can't be determined (for example when using custom types)
-                    # then just assume undefined.
-                    property.optional = if property.optional == :null
-                      :undefined_or_null
-                    else
-                      true
-                    end
-                  end
-
-                  property
-                end
+                flat_ts_properties(options)
               else
                 Property.new(
                   name: key,
@@ -83,6 +68,28 @@ module TypesFromSerializers
                 end
               end
             }
+        end
+      end
+
+      # Internal: Build properties for flat associations
+      def flat_ts_properties(options)
+        properties = options.fetch(:serializer).ts_properties
+
+        if options.key?(:if)
+          properties.map do |property|
+            # Need to clone property so optionality of other serializers is immutable
+            cloned_property = property.clone
+
+            cloned_property.optional = if cloned_property.optional == :null
+              :undefined_or_null
+            else
+              true
+            end
+
+            cloned_property
+          end
+        else
+          properties
         end
       end
 

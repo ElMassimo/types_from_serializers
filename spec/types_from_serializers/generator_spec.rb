@@ -14,6 +14,7 @@ describe "Generator" do
       SongSerializer
       SongWithVideosSerializer
       ModelSerializer
+      ComposerWithOptionalsSerializer
       ComposerWithSongsSerializer
       ComposerSerializer
       SnakeComposerSerializer

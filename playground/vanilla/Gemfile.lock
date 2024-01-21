@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    types_from_serializers (2.0.2)
+    types_from_serializers (2.1.0)
       listen (~> 3.2)
       oj_serializers (~> 2.0, >= 2.0.2)
       railties (>= 5.1)
@@ -45,6 +45,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_model_serializers (0.10.14)
+      actionpack (>= 4.1)
+      activemodel (>= 4.1)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (6.0.6.1)
       activesupport (= 6.0.6.1)
       globalid (>= 0.3.6)
@@ -65,6 +70,8 @@ GEM
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
     builder (3.2.4)
+    case_transform (0.2)
+      activesupport
     concurrent-ruby (1.2.2)
     crass (1.0.6)
     date (3.3.3)
@@ -86,6 +93,7 @@ GEM
       reline (>= 0.3.0)
     js_from_routes (2.0.6)
       railties (>= 5.1, < 8)
+    jsonapi-renderer (0.2.2)
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -209,6 +217,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_model_serializers (~> 0.10.0)
   debug
   inertia_rails (>= 1.2.2)
   js_from_routes (~> 2.0.6)

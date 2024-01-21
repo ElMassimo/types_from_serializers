@@ -15,6 +15,9 @@ gem "js_from_routes", "~> 2.0.6"
 # A more efficient version of ActiveModelSerializers (https://github.com/ElMassimo/oj_serializers)
 gem "oj_serializers"
 
+# ActiveModel::Serializer implementation and Rails hooks
+gem "active_model_serializers", "~> 0.10.0"
+
 # Generate TypeScript interfaces from Ruby serializers.
 gem "types_from_serializers", path: "../.."
 

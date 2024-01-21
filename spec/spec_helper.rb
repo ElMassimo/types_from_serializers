@@ -8,6 +8,7 @@ ENV["RACK_ENV"] = "development"
 require "rails"
 require "oj_serializers"
 require "types_from_serializers"
+require "active_model_serializers"
 require "rspec/given"
 
 begin

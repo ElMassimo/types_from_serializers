@@ -3,3 +3,4 @@
 require_relative "types_from_serializers/version"
 require_relative "types_from_serializers/dsl"
 require_relative "types_from_serializers/railtie"
+require_relative "types_from_serializers/ams"

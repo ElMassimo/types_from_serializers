@@ -41,7 +41,12 @@ module TypesFromSerializers
       # Internal: The columns corresponding to the serializer model, if it's a
       # record.
       def model_columns
-        @model_columns ||= _serializer_model_name&.to_model.try(:columns_hash) || {}
+        @model_columns ||= model.try(:columns_hash) || {}
+      end
+
+      # Internal: The model of the serializer.
+      def model
+        @model ||= _serializer_model_name&.to_model
       end
 
       # Internal: The TypeScript properties of the serialzeir interface.
@@ -64,7 +69,13 @@ module TypesFromSerializers
                   multi: options[:association] == :many,
                   column_name: options.fetch(:value_from),
                 ).tap do |property|
-                  property.infer_type_from(model_columns, types_from)
+                  enums = model.try(:defined_enums)
+
+                  if enums
+                    enum_values = enums[key].to_h.keys
+                  end
+
+                  property.infer_type_from(model_columns, types_from, enum_values)
                 end
               end
             }
@@ -190,9 +201,11 @@ module TypesFromSerializers
 
     # Internal: Infers the property's type by checking a corresponding SQL
     # column, or falling back to a TypeScript interface if provided.
-    def infer_type_from(columns_hash, ts_interface)
+    def infer_type_from(columns_hash, ts_interface, enum_values)
       if type
         type
+      elsif enum_values.present?
+        self.type = enum_values.map(&:inspect).join(" | ")
       elsif (column = columns_hash[column_name.to_s])
         self.multi = true if column.try(:array)
         self.optional = true if column.null && !column.default

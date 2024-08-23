@@ -1,3 +1,17 @@
+# [2.2.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.1.0...types_from_serializers@2.2.0) (2024-08-23)
+
+
+### Bug Fixes
+
+* be more accurate regarding decimal serialization ([cd63653](https://github.com/ElMassimo/types_from_serializers/commit/cd636530a5710112a14746cc7d0e3f15016cd5e1))
+
+
+### Features
+
+* infer type from enums ([#20](https://github.com/ElMassimo/types_from_serializers/issues/20)) ([49dc61d](https://github.com/ElMassimo/types_from_serializers/commit/49dc61da2718256e9b5f5743b5a65c4746d64c2f))
+
+
+
 # [2.1.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.0.2...types_from_serializers@2.1.0) (2023-07-19)
 
 

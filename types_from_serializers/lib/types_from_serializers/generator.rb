@@ -383,7 +383,7 @@ module TypesFromSerializers
           boolean: :boolean,
           date: "string | Date",
           datetime: "string | Date",
-          decimal: :number,
+          decimal: "string | number",
           integer: :number,
           string: :string,
           text: :string,

@@ -5,6 +5,7 @@ module.exports = {
   extends: ['@antfu/eslint-config'],
   rules: {
     '@typescript-eslint/space-before-function-paren': ['warn', 'always'],
+    '@typescript-eslint/quotes': 'off',
     'vue/attribute-hyphenation': ['warn', 'never'],
     'vue/html-closing-bracket-spacing': ['warn', {
       startTag: 'never',

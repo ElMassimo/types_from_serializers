@@ -1,3 +1,12 @@
+# [2.3.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.2.0...types_from_serializers@2.3.0) (2024-08-23)
+
+
+### Features
+
+* generate types for inline serializers, exclude them from the index ([1c3657c](https://github.com/ElMassimo/types_from_serializers/commit/1c3657c61a1bc891f3219f6eaf8557cd3cd6344a)), closes [#19](https://github.com/ElMassimo/types_from_serializers/issues/19)
+
+
+
 # [2.2.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.1.0...types_from_serializers@2.2.0) (2024-08-23)
 
 

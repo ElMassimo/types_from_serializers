@@ -1,3 +1,7 @@
 class ComposerWithSongsSerializer < ComposerSerializer
-  has_many :songs, serializer: ModelSerializer
+  class SongSerializer < BaseSerializer
+    attributes(:id, :title)
+  end
+
+  has_many :songs, serializer: SongSerializer
 end

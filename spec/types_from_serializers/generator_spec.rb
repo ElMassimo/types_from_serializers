@@ -13,13 +13,14 @@ describe "Generator" do
       SongWithVideosSerializer
       ModelSerializer
       ComposerWithSongsSerializer
+      ComposerWithSongsSerializer::SongSerializer
       ComposerSerializer
       SnakeComposerSerializer
     ]
   }
 
   def file_for(dir, name, ext)
-    dir.join("#{name.chomp("Serializer").gsub("::", "/")}.#{ext}")
+    dir.join("#{TypesFromSerializers.config.name_from_serializer.call(name).gsub("::", "/")}.#{ext}")
   end
 
   def app_file_for(name, ext = "ts")

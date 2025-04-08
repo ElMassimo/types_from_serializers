@@ -123,7 +123,7 @@ describe "Generator" do
 
       expect(ts_type).to eq(:string)
     end
-    
+
     it "maps json type from SQL to object type in TypeScript" do
       db_type = :json
 

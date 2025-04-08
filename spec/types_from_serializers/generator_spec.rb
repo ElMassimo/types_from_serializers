@@ -116,6 +116,14 @@ describe "Generator" do
       expect(ts_type).to eq(:string)
     end
 
+    it "maps uuid type from SQL to string type in TypeScript" do
+      db_type = :uuid
+
+      ts_type = TypesFromSerializers.config.sql_to_typescript_type_mapping[db_type]
+
+      expect(ts_type).to eq(:string)
+    end
+    
     it "maps json type from SQL to object type in TypeScript" do
       db_type = :json
 

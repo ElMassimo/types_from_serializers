@@ -12,6 +12,10 @@ bundle install
 pnpm install
 ```
 
+```
+pnpm migrate
+```
+
 ## Making sure your changes pass all tests
 
 There are a number of automated checks which run on GitHub Actions when a pull request is created.
@@ -24,11 +28,13 @@ pnpm lint
 ```
 
 ### 2. Check the code for Ruby style violations
+
 ```
 bin/rubocop
 ```
 
 ### 3. Run the test suite
+
 ```
 bin/rspec
 ```

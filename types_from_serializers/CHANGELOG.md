@@ -1,3 +1,13 @@
+# [2.4.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.3.0...types_from_serializers@2.4.0) (2025-04-08)
+
+
+### Features
+
+* add support for json and jsonb fields ([#25](https://github.com/ElMassimo/types_from_serializers/issues/25)) ([34e747f](https://github.com/ElMassimo/types_from_serializers/commit/34e747f11ebdd032484d10679240701eb2548ed3))
+* convert uuid fields to string type ([#24](https://github.com/ElMassimo/types_from_serializers/issues/24)) ([35c87a9](https://github.com/ElMassimo/types_from_serializers/commit/35c87a96365d32d40adce5ba9fddd3d380f29169))
+
+
+
 # [2.3.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.2.0...types_from_serializers@2.3.0) (2024-08-23)
 
 

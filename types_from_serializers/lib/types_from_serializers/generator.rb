@@ -393,6 +393,8 @@ module TypesFromSerializers
           text: :string,
           citext: :string,
           uuid: :string,
+          json: "Record<string, any>",
+          jsonb: "Record<string, any>",
         }.tap do |types|
           types.default = :unknown
         end,

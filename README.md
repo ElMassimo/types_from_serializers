@@ -233,6 +233,33 @@ export default interface Location {
 }
 ```
 
+### Optional Attributes
+
+Attributes can be marked as optional with one of three options:
+
+* `true`: Property will be marked as optional using TypeScript's `[key]?: T` shorthand. This is equivalent to `[key]: T | undefined`
+* `:null`: Property will be generated as a union type with null, e.g. `[key]: T | null`
+* `:undefined_or_null`: Property will be generated with both null and undefined supported, e.g. `[key]?: T | null`
+
+For example:
+
+```
+type :string, optional: :null
+def youtube_url
+  "https://www.youtube.com/watch?v=#{video.youtube_id}" if video.youtube_id
+end
+```
+
+would generate:
+
+```
+youtubeUrl: string | null
+```
+
+By default, the library will infer only `option: true` from the SQL schema and for conditional attributes.
+If you would like to allow the library to generate optional properties supporting `null` types, you can enable
+the `infer_null_optionality` configuration option.
+
 ## Generation 📜
 
 To get started, run `bin/rails s` to start the `Rails` development server.
@@ -386,6 +413,13 @@ You can provide a proc to transform property names.
 
 This library assumes that you will transform the casing client-side, but you can
 generate types preserving case by using `config.transform_keys = ->(key) { key }`.
+
+### `infer_null_optionality`
+
+__Default:_ `false`
+
+When set to `true`, property types can be generated as a union type including `null`.
+The library will infer null optionality based on the SQL schema for attributes.
 
 ## Contact ✉️
 

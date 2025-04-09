@@ -43,7 +43,7 @@ module TypesFromSerializers
         name.include?("Serializer::")
       end
 
-      # Internal: The TypeScript properties of the serialzeir interface.
+      # Internal: The TypeScript properties of the serializer interface.
       def ts_properties
         @ts_properties ||= begin
           model_class = _serializer_model_name&.to_model
@@ -57,7 +57,7 @@ module TypesFromSerializers
           )
             .flat_map { |key, options|
               if options[:association] == :flat
-                options.fetch(:serializer).ts_properties
+                flat_ts_properties(options)
               else
                 Property.new(
                   name: key,
@@ -70,6 +70,28 @@ module TypesFromSerializers
                 end
               end
             }
+        end
+      end
+
+      # Internal: Build properties for flat associations
+      def flat_ts_properties(options)
+        properties = options.fetch(:serializer).ts_properties
+
+        if options.key?(:if)
+          properties.map do |property|
+            # Need to clone property so optionality of other serializers is immutable
+            cloned_property = property.clone
+
+            cloned_property.optional = if cloned_property.optional == :null
+              :undefined_or_null
+            else
+              true
+            end
+
+            cloned_property
+          end
+        else
+          properties
         end
       end
 
@@ -97,6 +119,7 @@ module TypesFromSerializers
     :skip_serializer_if,
     :transform_keys,
     :namespace,
+    :infer_null_optionality,
     keyword_init: true,
   ) do
     def relative_custom_types_dir
@@ -198,8 +221,14 @@ module TypesFromSerializers
       elsif (enum = defined_enums[column_name.to_s])
         self.type = enum.keys.map(&:inspect).join(" | ")
       elsif (column = columns_hash[column_name.to_s])
+        null_optional_type = if TypesFromSerializers.config.infer_null_optionality
+          :null
+        else
+          true
+        end
+
         self.multi = true if column.try(:array)
-        self.optional = true if column.null && !column.default
+        self.optional = null_optional_type if column.null && !column.default
         self.type = TypesFromSerializers.config.sql_to_typescript_type_mapping[column.type]
       elsif ts_interface
         self.type = "#{ts_interface}['#{name}']"
@@ -213,7 +242,16 @@ module TypesFromSerializers
         type || TypesFromSerializers.config.unknown_type
       end
 
-      "#{name}#{"?" if optional}: #{type_str}#{"[]" if multi}"
+      if [:null, :undefined_or_null].include?(optional)
+        type_str = "#{type_str} | null"
+
+        # Need to wrap in parens for array types when null is included as a union type.
+        if multi
+          type_str = "(#{type_str})"
+        end
+      end
+
+      "#{name}#{"?" if [true, :undefined_or_null].include?(optional)}: #{type_str}#{"[]" if multi}"
     end
   end
 
@@ -404,6 +442,9 @@ module TypesFromSerializers
 
         # Allows scoping typescript definitions to a namespace
         namespace: nil,
+
+        # Allows generating properties with null union types for optional attributes, disabled by default.
+        infer_null_optionality: false,
       )
     end
 

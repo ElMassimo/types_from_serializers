@@ -54,3 +54,6 @@ docs
 
 # Ruby version
 .ruby-version
+
+# AI tools
+CLAUDE.md

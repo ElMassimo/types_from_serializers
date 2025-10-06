@@ -16,6 +16,7 @@ describe "Generator" do
       ComposerWithSongsSerializer::SongSerializer
       ComposerSerializer
       SnakeComposerSerializer
+      CommentSerializer
     ]
   }
 
@@ -74,6 +75,19 @@ describe "Generator" do
 
       # It does not render if generating again.
       TypesFromSerializers.generate
+    end
+
+    it "does not generate self-import for recursive serializers" do
+      TypesFromSerializers.generate
+
+      comment_file = output_file_for("CommentSerializer")
+      content = comment_file.read
+
+      # should not contain a self-import, but the properly and definition
+      # should remain
+      expect(content).not_to match(/import type Comment from ["']\.\/Comment["']/)
+      expect(content).to match(/replies:\s*Comment\[\]/)
+      expect(content).to match(/export default interface Comment/)
     end
   end
 

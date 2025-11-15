@@ -5,7 +5,7 @@ class VideoSerializer < BaseSerializer
     :id,
     :created_at,
     :title,
-    :youtube_id,
+    youtube_id: {doc: "YouTube ID of the video"},
   )
 
   type :string, optional: true

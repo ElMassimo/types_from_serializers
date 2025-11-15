@@ -3,3 +3,5 @@
 require_relative "types_from_serializers/version"
 require_relative "types_from_serializers/dsl"
 require_relative "types_from_serializers/railtie"
+
+OjSerializers::Serializer::KNOWN_ATTRIBUTE_OPTIONS << :doc

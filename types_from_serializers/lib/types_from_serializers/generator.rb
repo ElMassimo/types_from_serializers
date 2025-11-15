@@ -62,6 +62,7 @@ module TypesFromSerializers
                 Property.new(
                   name: key,
                   type: options[:serializer] || options[:type],
+                  doc: options[:doc],
                   optional: options[:optional] || options.key?(:if),
                   multi: options[:association] == :many,
                   column_name: options.fetch(:value_from),
@@ -146,7 +147,7 @@ module TypesFromSerializers
       indent = TypesFromSerializers.config.namespace ? 3 : 1
       <<~TS.gsub(/\n$/, "")
         interface #{name} {
-        #{"  " * indent}#{properties.index_by(&:name).values.map(&:as_typescript).join("\n#{"  " * indent}")}
+        #{"  " * indent}#{properties.index_by(&:name).values.map { |property| property.as_typescript(indent) }.join("\n#{"  " * indent}")}
         #{"  " * (indent - 1)}}
       TS
     end
@@ -182,6 +183,7 @@ module TypesFromSerializers
     :optional,
     :multi,
     :column_name,
+    :doc,
     keyword_init: true,
   ) do
     using SerializerRefinements
@@ -206,14 +208,24 @@ module TypesFromSerializers
       end
     end
 
-    def as_typescript
+    def as_typescript(indent = 1)
       type_str = if type.respond_to?(:ts_name)
         type.ts_name
       else
         type || TypesFromSerializers.config.unknown_type
       end
 
-      "#{name}#{"?" if optional}: #{type_str}#{"[]" if multi}"
+      comment = if doc
+        <<~TSDOC
+          /**
+          * #{doc.strip}
+          */
+        TSDOC
+      else
+        ""
+      end
+
+      "#{comment}#{name}#{"?" if optional}: #{type_str}#{"[]" if multi}".lines.join("\n#{"  " * indent}")
     end
   end
 

@@ -1,18 +1,18 @@
 ## Setting Up a Development Environment
 
-1. Install [pnpm](https://pnpm.js.org/)
+1. Install [pnpm](https://pnpm.io/installation)
 
 2. Run the following commands to set up the development environment.
 
-```
+```sh
 bundle install
 ```
 
-```
+```sh
 pnpm install
 ```
 
-```
+```sh
 pnpm migrate
 ```
 
@@ -23,18 +23,18 @@ You can run those checks on your own locally to make sure that your changes woul
 
 ### 1. Check the code for JavaScript style violations
 
-```
+```sh
 pnpm lint
 ```
 
 ### 2. Check the code for Ruby style violations
 
-```
+```sh
 bin/rubocop
 ```
 
 ### 3. Run the test suite
 
-```
+```sh
 bin/rspec
 ```

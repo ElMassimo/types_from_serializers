@@ -139,5 +139,13 @@ describe "Generator" do
 
       expect(ts_type).to eq("Record<string, any>")
     end
+
+    it "maps time type from SQL to string|Date type in typescript" do
+      db_type = :time
+
+      ts_type = TypesFromSerializers.config.sql_to_typescript_type_mapping[db_type]
+
+      expect(ts_type).to eq("string | Date")
+    end
   end
 end

@@ -385,6 +385,7 @@ module TypesFromSerializers
         # Maps SQL column types to TypeScript native and custom types.
         sql_to_typescript_type_mapping: {
           boolean: :boolean,
+          time: "string | Date",
           date: "string | Date",
           datetime: "string | Date",
           decimal: "string | number",

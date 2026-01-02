@@ -127,6 +127,7 @@ module TypesFromSerializers
         .partition { |type| type.respond_to?(:ts_interface) }
 
       serializer_type_imports = association_serializers.map(&:ts_interface)
+        .reject { |type| type.name == name } # avoid self-imports (e.g. for recursive types)
         .map { |type| [type.name, relative_path(type.pathname, pathname)] }
 
       custom_type_imports = attribute_types

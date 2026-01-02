@@ -1,3 +1,17 @@
+# [2.5.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.4.0...types_from_serializers@2.5.0) (2026-01-02)
+
+
+### Bug Fixes
+
+* generated types for self-referential attributes ([#28](https://github.com/ElMassimo/types_from_serializers/issues/28)) ([abd5073](https://github.com/ElMassimo/types_from_serializers/commit/abd507321da6a796d29c8aab966d18c3c6627002))
+
+
+### Features
+
+* add 'time' datatype ([#30](https://github.com/ElMassimo/types_from_serializers/issues/30)) ([9427a4a](https://github.com/ElMassimo/types_from_serializers/commit/9427a4a64f8e344416b84007b28e49ec7f8537c3))
+
+
+
 # [2.4.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.3.0...types_from_serializers@2.4.0) (2025-04-08)
 
 

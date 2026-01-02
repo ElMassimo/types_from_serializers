@@ -58,16 +58,15 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         ruby: [
-          "3.2",
           "3.3",
         ]
         gemfile: [
-          "Gemfile-rails.7.1.x",
           "Gemfile-rails.7.2.x",
+          "Gemfile-rails.8.0.x",
         ]
         experimental: [false]
         include:
-          - ruby: "3.3"
+          - ruby: "4.0"
             os: ubuntu-latest
             gemfile: Gemfile-rails-edge
             experimental: true

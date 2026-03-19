@@ -14,15 +14,17 @@ class TypesFromSerializers::Railtie < Rails::Railtie
         require "listen"
 
         app.config.after_initialize do
-          app.reloaders << TypesFromSerializers.track_changes
+          TypesFromSerializers.all_changes.each do |changes|
+            app.reloaders << changes
+          end
         end
 
         app.config.to_prepare do
-          TypesFromSerializers.generate_changed
+          TypesFromSerializers.generate_all_changed
         end
       else
         app.config.to_prepare do
-          TypesFromSerializers.generate
+          TypesFromSerializers.generate_all
         end
 
         Rails.logger.warn "Add 'listen' to your Gemfile to automatically generate code on serializer changes."
@@ -38,10 +40,8 @@ class TypesFromSerializers::Railtie < Rails::Railtie
         require_relative "generator"
         start_time = Time.zone.now
         print "Generating TypeScript interfaces..."
-        serializers = TypesFromSerializers.generate(force: true)
-        puts "completed in #{(Time.zone.now - start_time).round(2)} seconds.\n"
-        puts "Found #{serializers.size} serializers:"
-        puts serializers.map { |s| "\t#{s.name}" }.join("\n")
+        TypesFromSerializers.generate_all(force: true)
+        puts "completed in #{(Time.zone.now - start_time).round(2)} seconds."
       end
     end
   end

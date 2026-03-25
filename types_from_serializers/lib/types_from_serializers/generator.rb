@@ -265,11 +265,21 @@ module TypesFromSerializers
 
     attr_reader :force_generation
 
+    # Public: Registry of named configurations for multi-app setups.
+    def configs
+      @configs ||= {}
+    end
+
     # Public: Configuration of the code generator.
-    def config
-      (@config ||= default_config(root)).tap do |config|
-        yield(config) if block_given?
+    # Without a name: returns/modifies the default config (backward compatible).
+    # With a name: returns/creates a named config for a specific sub-app.
+    def config(name = :default, &block)
+      cfg = if name == :default
+        @config ||= default_config(root)
+      else
+        configs[name] ||= default_config(root)
       end
+      cfg.tap { |c| yield(c) if block }
     end
 
     # Public: Generates code for all serializers in the app.
@@ -288,12 +298,36 @@ module TypesFromSerializers
       end
     end
 
+    # Public: Generates types for all registered configurations (default + named).
+    # Use this in monolith setups with multiple sub-apps.
+    def generate_all(force: ENV["SERIALIZER_TYPES_FORCE"])
+      all_configs_list.each do |cfg|
+        with_active_config(cfg) { generate(force: force) }
+      end
+    end
+
     def generate_changed
-      if changes.updated?
-        config.output_dir.rmtree if changes.any_removed?
-        load_serializers(changes.modified_files)
+      chg = changes_for(config)
+      if chg.updated?
+        config.output_dir.rmtree if chg.any_removed?
+        load_serializers(chg.modified_files)
         generate
-        changes.clear
+        chg.clear
+      end
+    end
+
+    # Public: Like generate_changed but for all registered configurations.
+    def generate_all_changed
+      all_configs_list.each do |cfg|
+        chg = changes_for(cfg)
+        if chg.updated?
+          with_active_config(cfg) do
+            config.output_dir.rmtree if chg.any_removed?
+            load_serializers(chg.modified_files)
+            generate
+            chg.clear
+          end
+        end
       end
     end
 
@@ -321,9 +355,14 @@ module TypesFromSerializers
         config.skip_serializer_if.call(serializer)
     end
 
-    # Internal: Returns an object compatible with FileUpdateChecker.
+    # Internal: Returns the Changes tracker for the default config (backward compatible).
     def track_changes
-      changes
+      changes_for(config)
+    end
+
+    # Public: Returns Changes trackers for all registered configurations.
+    def all_changes
+      all_configs_list.map { |cfg| changes_for(cfg) }
     end
 
   private
@@ -332,8 +371,23 @@ module TypesFromSerializers
       defined?(Rails) ? Rails.root : Pathname.new(Dir.pwd)
     end
 
-    def changes
-      @changes ||= Changes.new(config.serializers_dirs)
+    def changes_for(cfg)
+      @changes_registry ||= {}
+      @changes_registry[cfg.object_id] ||= Changes.new(cfg.serializers_dirs)
+    end
+
+    # Internal: Returns the default config followed by all named configs.
+    def all_configs_list
+      [(@config || default_config(root))] + configs.values
+    end
+
+    # Internal: Temporarily sets the active config for the duration of a block,
+    # so all internal methods and refinements pick up the correct config.
+    def with_active_config(cfg)
+      saved, @config = @config, cfg
+      yield
+    ensure
+      @config = saved
     end
 
     def all_serializer_files

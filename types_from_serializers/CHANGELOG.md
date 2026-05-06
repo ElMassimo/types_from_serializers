@@ -1,3 +1,13 @@
+# [2.6.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.5.0...types_from_serializers@2.6.0) (2026-05-06)
+
+
+### Features
+
+* relax oj_serializers dependency by removing the upper constraint ([#34](https://github.com/ElMassimo/types_from_serializers/issues/34)) ([3018e89](https://github.com/ElMassimo/types_from_serializers/commit/3018e8937a6808123bf0dd482e730bc666d20137))
+* support multiple generator instances for Rails monolith sub-apps ([#32](https://github.com/ElMassimo/types_from_serializers/issues/32)) ([33ce3c1](https://github.com/ElMassimo/types_from_serializers/commit/33ce3c1cfa78c6c899ef9fdd05a034ccde50431f))
+
+
+
 # [2.5.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.4.0...types_from_serializers@2.5.0) (2026-01-02)
 
 

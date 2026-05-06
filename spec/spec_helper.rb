@@ -10,6 +10,8 @@ require "oj_serializers"
 require "types_from_serializers"
 require "rspec/given"
 
+require_relative "support/snapshot_matcher"
+
 begin
   require "pry-byebug"
 rescue LoadError

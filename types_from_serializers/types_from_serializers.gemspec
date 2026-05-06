@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec-given", "~> 3.8"
-  s.add_development_dependency "rspec-snapshot"
   s.add_development_dependency "simplecov", "< 0.18"
   s.add_development_dependency "standard", "~> 1.0"
   s.add_development_dependency "activerecord"

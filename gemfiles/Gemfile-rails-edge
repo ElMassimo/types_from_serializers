@@ -1,7 +1,19 @@
 source "https://rubygems.org"
 
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
-
-gem "rails", github: "rails/rails", branch: "main"
+git "https://github.com/rails/rails.git", branch: "main" do
+  gem "rails"
+  gem "activesupport"
+  gem "activemodel"
+  gem "activerecord"
+  gem "actionview"
+  gem "actionpack"
+  gem "activejob"
+  gem "actionmailer"
+  gem "actioncable"
+  gem "activestorage"
+  gem "actionmailbox"
+  gem "actiontext"
+  gem "railties"
+end
 
 gemspec path: "../types_from_serializers"

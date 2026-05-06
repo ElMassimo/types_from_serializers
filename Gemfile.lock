@@ -173,7 +173,6 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
-  bundler (~> 2)
   debug
   js_from_routes
   pry-byebug

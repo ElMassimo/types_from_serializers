@@ -1,6 +1,6 @@
 ## [2.6.1](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.6.0...types_from_serializers@2.6.1) (2026-07-03)
 
-
+* Render nullable boolean columns with default value of false as not optional on rails 8.1 [#36](https://github.com/ElMassimo/types_from_serializers/pull/36)
 
 # [2.6.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.5.0...types_from_serializers@2.6.0) (2026-05-06)
 

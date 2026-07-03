@@ -1,3 +1,7 @@
+## [2.6.1](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.6.0...types_from_serializers@2.6.1) (2026-07-03)
+
+
+
 # [2.6.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.5.0...types_from_serializers@2.6.0) (2026-05-06)
 
 

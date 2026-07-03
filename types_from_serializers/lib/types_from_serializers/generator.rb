@@ -200,7 +200,7 @@ module TypesFromSerializers
         self.type = enum.keys.map(&:inspect).join(" | ")
       elsif (column = columns_hash[column_name.to_s])
         self.multi = true if column.try(:array)
-        self.optional = true if column.null && !column.default
+        self.optional = true if column.null && column.default.nil?
         self.type = TypesFromSerializers.config.sql_to_typescript_type_mapping[column.type]
       elsif ts_interface
         self.type = "#{ts_interface}['#{name}']"

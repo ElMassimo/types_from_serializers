@@ -7,6 +7,7 @@ describe "Generator" do
   let(:serializers) {
     %w[
       Nested::AlbumSerializer
+      Nested::SongSummarySerializer
       VideoWithSongSerializer
       VideoSerializer
       SongSerializer
@@ -88,6 +89,17 @@ describe "Generator" do
       expect(content).not_to match(/import type Comment from ["']\.\/Comment["']/)
       expect(content).to match(/replies:\s*Comment\[\]/)
       expect(content).to match(/export default interface Comment/)
+    end
+
+    it "routes string-form refs to generated serializers through the serializers dir" do
+      TypesFromSerializers.generate
+
+      content = output_file_for("Nested::SongSummarySerializer").read
+
+      # One parent ('../Song') is the sibling in types/serializers/;
+      # two parents ('../../Song') would escape into types/ where the file doesn't exist.
+      expect(content).to include("import type Song from '../Song'")
+      expect(content).not_to include("import type Song from '../../Song'")
     end
   end
 

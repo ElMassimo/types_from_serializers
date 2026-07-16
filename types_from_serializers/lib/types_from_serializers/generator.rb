@@ -135,8 +135,12 @@ module TypesFromSerializers
         .uniq
         .reject { |type| global_type?(type) }
         .map { |type|
-          type_path = TypesFromSerializers.config.relative_custom_types_dir.join(type)
-          [type, relative_path(type_path, pathname)]
+          if (iface = TypesFromSerializers.serializer_interfaces_by_ts_name[type])
+            [type, relative_path(iface.pathname, pathname)]
+          else
+            type_path = TypesFromSerializers.config.relative_custom_types_dir.join(type)
+            [type, relative_path(type_path, pathname)]
+          end
         }
 
       (custom_type_imports + serializer_type_imports)
@@ -363,6 +367,11 @@ module TypesFromSerializers
     # Public: Returns Changes trackers for all registered configurations.
     def all_changes
       all_configs_list.map { |cfg| changes_for(cfg) }
+    end
+
+    # Internal: Map of ts_name => Interface for all loaded serializers.
+    def serializer_interfaces_by_ts_name
+      loaded_serializers.each_with_object({}) { |s, h| h[s.ts_name] = s.ts_interface }
     end
 
   private

@@ -1,3 +1,13 @@
+# [2.7.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.6.1...types_from_serializers@2.7.0) (2026-10-17)
+
+
+### Features
+
+* generated files no longer start with a `// TypesFromSerializers CacheKey` header. Files are compared by content and only written when they changed, which removes a frequent source of merge conflicts. Run `bin/rake types_from_serializers:generate` once after upgrading to drop the header from existing files.
+* in development, only the serializers whose files were modified are regenerated; adding or removing a serializer file still triggers a full pass.
+* `SERIALIZER_TYPES_FORCE` now only controls whether the output dir is cleaned before generating.
+
+
 ## [2.6.1](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.6.0...types_from_serializers@2.6.1) (2026-07-03)
 
 * Render nullable boolean columns with default value of false as not optional on rails 8.1 [#36](https://github.com/ElMassimo/types_from_serializers/pull/36)

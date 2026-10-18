@@ -129,7 +129,8 @@ describe "Generator" do
     let(:song_serializer_file) { Rails.root.join("app/serializers/song_serializer.rb").to_s }
 
     def stub_changes(modified: [], added: [], removed: [])
-      changes = instance_double(TypesFromSerializers::Changes,
+      changes = instance_double(
+        TypesFromSerializers::Changes,
         updated?: [modified, added, removed].any?(&:any?),
         only_modified?: added.empty? && removed.empty?,
         any_removed?: removed.any?,
@@ -147,9 +148,10 @@ describe "Generator" do
 
     it "regenerates interfaces but not the index when files were only modified" do
       changes = stub_changes(modified: [song_serializer_file])
-      expect(changes).to receive(:clear)
+      allow(changes).to receive(:clear)
 
       TypesFromSerializers.generate_changed
+      expect(changes).to have_received(:clear)
       expect(output_file_for("SongSerializer").read).to match_snapshot("interfaces_SongSerializer")
       expect(output_dir.join("index.ts").exist?).to be false
     end
@@ -174,9 +176,10 @@ describe "Generator" do
       TypesFromSerializers.generate
       stale_file = output_dir.join("Removed.ts").tap { |file| file.write("stale") }
       changes = stub_changes(removed: [song_serializer_file])
-      expect(changes).to receive(:clear)
+      allow(changes).to receive(:clear)
 
       TypesFromSerializers.generate_changed
+      expect(changes).to have_received(:clear)
       expect(stale_file.exist?).to be false
       expect(output_dir.join("index.ts").read).to match_snapshot("interfaces_index")
     end

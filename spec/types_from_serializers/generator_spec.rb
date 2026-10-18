@@ -154,7 +154,7 @@ describe "Generator" do
       expect(output_dir.join("index.ts").exist?).to be false
     end
 
-    it "also loads the serializers that reference a modified one, so subclasses are regenerated" do
+    it "also loads the subclasses of a modified serializer, but not serializers that merely associate it" do
       changes = stub_changes(modified: [Rails.root.join("app/serializers/composer_serializer.rb").to_s])
       allow(changes).to receive(:clear)
       allow(TypesFromSerializers).to receive(:load_serializers).and_call_original
@@ -163,6 +163,9 @@ describe "Generator" do
       expect(TypesFromSerializers).to have_received(:load_serializers).with(array_including(
         Rails.root.join("app/serializers/snake_composer_serializer.rb").to_s,
         Rails.root.join("app/serializers/composer_with_songs_serializer.rb").to_s,
+      ))
+      expect(TypesFromSerializers).not_to have_received(:load_serializers).with(array_including(
+        Rails.root.join("app/serializers/song_serializer.rb").to_s,
       ))
       expect(output_file_for("SnakeComposerSerializer").read).to match_snapshot("interfaces_SnakeComposerSerializer")
     end

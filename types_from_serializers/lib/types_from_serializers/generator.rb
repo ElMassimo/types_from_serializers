@@ -386,12 +386,10 @@ module TypesFromSerializers
     end
 
     # Internal: Requires the given serializer files, plus every serializer file
-    # that mentions a serializer they define, transitively. Rails unloads all
-    # classes before to_prepare, so subclasses and flat associations of a
-    # modified serializer would otherwise stay unloaded, and their files stale.
-    #
-    # Matching by name over-approximates (a has_one reference qualifies too),
-    # which only costs loading a few extra files whose output doesn't change.
+    # whose interface depends on a serializer they define, transitively. Rails
+    # unloads all classes before to_prepare, so subclasses and flat associations
+    # of a modified serializer would otherwise stay unloaded, and their files
+    # stale.
     def load_serializers_and_dependents(files)
       loaded = Set.new
       pending = files.to_a
@@ -399,7 +397,7 @@ module TypesFromSerializers
         load_serializers(pending)
         loaded.merge(pending)
         names = serializer_names_defined_in(pending)
-        pending = names.empty? ? [] : serializer_files_mentioning(names).reject { |file| loaded.include?(file) }
+        pending = names.empty? ? [] : serializer_files_depending_on(names).reject { |file| loaded.include?(file) }
       end
     end
 
@@ -411,9 +409,21 @@ module TypesFromSerializers
         .uniq
     end
 
-    def serializer_files_mentioning(names)
-      pattern = /\b(?:#{names.map { |name| Regexp.escape(name) }.join("|")})\b/
-      all_serializer_files.select { |file| File.read(file).match?(pattern) }
+    # Internal: Files whose serializers inherit from, or flat-embed, one of the
+    # named serializers: the only references that change a generated interface,
+    # since plain associations only import the other interface by name.
+    #
+    # A file is scanned as text rather than loaded, so this is cheap. Flat
+    # associations are matched loosely (a flat call anywhere plus the name
+    # anywhere) so that multi-line calls aren't missed.
+    def serializer_files_depending_on(names)
+      alternatives = names.map { |name| Regexp.escape(name) }.join("|")
+      inherits = /<\s*(?:\w+::)*(?:#{alternatives})\b/
+      mentions = /\b(?:#{alternatives})\b/
+      all_serializer_files.select { |file|
+        source = File.read(file)
+        source.match?(inherits) || (source.include?("flat") && source.match?(mentions))
+      }
     end
 
     def all_serializer_files

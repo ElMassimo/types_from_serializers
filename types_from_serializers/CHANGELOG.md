@@ -4,7 +4,7 @@
 ### Features
 
 * generated files no longer start with a `// TypesFromSerializers CacheKey` header. Files are compared by content and only written when they changed, which removes a frequent source of merge conflicts. Run `bin/rake types_from_serializers:generate` once after upgrading to drop the header from existing files.
-* in development, only the serializers whose files were modified are regenerated, together with the serializers that reference them (subclasses, flat associations), found by scanning the serializer files for their names; adding or removing a serializer file still triggers a full pass.
+* in development, only the serializers whose files were modified are regenerated, together with their subclasses and the serializers that flat-embed them, found by scanning the serializer files; adding or removing a serializer file still triggers a full pass.
 * `SERIALIZER_TYPES_FORCE` now only controls whether the output dir is cleaned before generating.
 
 

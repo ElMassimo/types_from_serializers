@@ -154,6 +154,19 @@ describe "Generator" do
       expect(output_dir.join("index.ts").exist?).to be false
     end
 
+    it "also loads the serializers that reference a modified one, so subclasses are regenerated" do
+      changes = stub_changes(modified: [Rails.root.join("app/serializers/composer_serializer.rb").to_s])
+      allow(changes).to receive(:clear)
+      allow(TypesFromSerializers).to receive(:load_serializers).and_call_original
+
+      TypesFromSerializers.generate_changed
+      expect(TypesFromSerializers).to have_received(:load_serializers).with(array_including(
+        Rails.root.join("app/serializers/snake_composer_serializer.rb").to_s,
+        Rails.root.join("app/serializers/composer_with_songs_serializer.rb").to_s,
+      ))
+      expect(output_file_for("SnakeComposerSerializer").read).to match_snapshot("interfaces_SnakeComposerSerializer")
+    end
+
     it "regenerates everything, dropping stale files, when a file was removed" do
       TypesFromSerializers.generate
       stale_file = output_dir.join("Removed.ts").tap { |file| file.write("stale") }

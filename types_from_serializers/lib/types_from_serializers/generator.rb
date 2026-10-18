@@ -302,14 +302,14 @@ module TypesFromSerializers
     # last run, which avoids loading every serializer on each reload.
     #
     # When files were only modified, the index can't have changed (it's derived
-    # from file names), so only the serializers that get loaded by requiring
-    # those files are regenerated. Added or removed files require a full pass.
+    # from file names), so only the modified serializers and the ones that
+    # depend on them are regenerated. Added or removed files require a full pass.
     def generate_changed
       chg = changes_for(config)
       return unless chg.updated?
 
       if chg.only_modified?
-        load_serializers(chg.modified_files)
+        load_serializers_and_dependents(chg.modified_files)
         generate_interfaces
       else
         generate(force: chg.any_removed?)
@@ -383,6 +383,37 @@ module TypesFromSerializers
 
     def generate_interfaces
       loaded_serializers.each { |serializer| generate_interface_for(serializer) }
+    end
+
+    # Internal: Requires the given serializer files, plus every serializer file
+    # that mentions a serializer they define, transitively. Rails unloads all
+    # classes before to_prepare, so subclasses and flat associations of a
+    # modified serializer would otherwise stay unloaded, and their files stale.
+    #
+    # Matching by name over-approximates (a has_one reference qualifies too),
+    # which only costs loading a few extra files whose output doesn't change.
+    def load_serializers_and_dependents(files)
+      loaded = Set.new
+      pending = files.to_a
+      until pending.empty?
+        load_serializers(pending)
+        loaded.merge(pending)
+        names = serializer_names_defined_in(pending)
+        pending = names.empty? ? [] : serializer_files_mentioning(names).reject { |file| loaded.include?(file) }
+      end
+    end
+
+    def serializer_names_defined_in(files)
+      base_serializers = config.base_serializers.filter_map(&:safe_constantize)
+      (base_serializers + base_serializers.flat_map(&:descendants))
+        .select { |serializer| files.include?(Object.const_source_location(serializer.name)&.first) }
+        .map { |serializer| serializer.name.demodulize }
+        .uniq
+    end
+
+    def serializer_files_mentioning(names)
+      pattern = /\b(?:#{names.map { |name| Regexp.escape(name) }.join("|")})\b/
+      all_serializer_files.select { |file| File.read(file).match?(pattern) }
     end
 
     def all_serializer_files

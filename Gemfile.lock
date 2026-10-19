@@ -1,7 +1,7 @@
 PATH
   remote: types_from_serializers
   specs:
-    types_from_serializers (2.6.1)
+    types_from_serializers (2.7.0)
       listen (~> 3.2)
       oj_serializers (>= 2.0.2)
       railties (>= 5.1)
@@ -146,11 +146,12 @@ GEM
       rubocop (~> 1.33)
       rubocop-capybara (~> 2.17)
     ruby-progressbar (1.13.0)
-    simplecov (0.17.1)
+    simplecov (0.22.0)
       docile (~> 1.1)
-      json (>= 1.8, < 3)
-      simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.2)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.2)
+    simplecov_json_formatter (0.1.4)
     sorcerer (2.0.1)
     sqlite3 (1.6.2)
       mini_portile2 (~> 2.8.0)
@@ -178,7 +179,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
-  simplecov (< 0.18)
+  simplecov (~> 0.22)
   sqlite3
   standard (~> 1.0)
   types_from_serializers!

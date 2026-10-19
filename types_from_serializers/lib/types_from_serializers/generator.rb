@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "digest"
 require "fileutils"
 require "pathname"
 
@@ -263,8 +262,6 @@ module TypesFromSerializers
   class << self
     using SerializerRefinements
 
-    attr_reader :force_generation
-
     # Public: Registry of named configurations for multi-app setups.
     def configs
       @configs ||= {}
@@ -283,19 +280,14 @@ module TypesFromSerializers
     end
 
     # Public: Generates code for all serializers in the app.
+    #
+    # force - Deletes the output dir first, so that files for serializers that
+    #         were renamed or removed don't linger.
     def generate(force: ENV["SERIALIZER_TYPES_FORCE"])
-      @force_generation = force
       config.output_dir.rmtree if force && config.output_dir.exist?
-
-      if config.namespace
-        load_serializers(all_serializer_files) if force
-      else
-        generate_index_file
-      end
-
-      loaded_serializers.each do |serializer|
-        generate_interface_for(serializer)
-      end
+      load_serializers(all_serializer_files)
+      generate_index_file unless config.namespace
+      generate_interfaces
     end
 
     # Public: Generates types for all registered configurations (default + named).
@@ -306,28 +298,29 @@ module TypesFromSerializers
       end
     end
 
+    # Public: Generates code only for serializers whose files changed since the
+    # last run, which avoids loading every serializer on each reload.
+    #
+    # When files were only modified, the index can't have changed (it's derived
+    # from file names), so only the modified serializers and the ones that
+    # depend on them are regenerated. Added or removed files require a full pass.
     def generate_changed
       chg = changes_for(config)
-      if chg.updated?
-        config.output_dir.rmtree if chg.any_removed?
-        load_serializers(chg.modified_files)
-        generate
-        chg.clear
+      return unless chg.updated?
+
+      if chg.only_modified?
+        load_serializers_and_dependents(chg.modified_files)
+        generate_interfaces
+      else
+        generate(force: chg.any_removed?)
       end
+      chg.clear
     end
 
     # Public: Like generate_changed but for all registered configurations.
     def generate_all_changed
       all_configs_list.each do |cfg|
-        chg = changes_for(cfg)
-        if chg.updated?
-          with_active_config(cfg) do
-            config.output_dir.rmtree if chg.any_removed?
-            load_serializers(chg.modified_files)
-            generate
-            chg.clear
-          end
-        end
+        with_active_config(cfg) { generate_changed }
       end
     end
 
@@ -335,16 +328,14 @@ module TypesFromSerializers
     def generate_interface_for(serializer)
       interface = serializer.ts_interface
 
-      write_if_changed(filename: interface.filename, cache_key: interface.inspect, extension: config.namespace ? "d.ts" : "ts") {
+      write_if_changed(filename: interface.filename, extension: config.namespace ? "d.ts" : "ts") {
         serializer_interface_content(interface)
       }
     end
 
     # Internal: Allows to import all serializer types from a single file.
     def generate_index_file
-      cache_key = all_serializer_files.map { |file| file.delete_prefix(root.to_s) }.join
-      write_if_changed(filename: "index", cache_key: cache_key) {
-        load_serializers(all_serializer_files)
+      write_if_changed(filename: "index") {
         serializers_index_content(loaded_serializers)
       }
     end
@@ -388,6 +379,51 @@ module TypesFromSerializers
       yield
     ensure
       @config = saved
+    end
+
+    def generate_interfaces
+      loaded_serializers.each { |serializer| generate_interface_for(serializer) }
+    end
+
+    # Internal: Requires the given serializer files, plus every serializer file
+    # whose interface depends on a serializer they define, transitively. Rails
+    # unloads all classes before to_prepare, so subclasses and flat associations
+    # of a modified serializer would otherwise stay unloaded, and their files
+    # stale.
+    def load_serializers_and_dependents(files)
+      loaded = Set.new
+      pending = files.to_a
+      until pending.empty?
+        load_serializers(pending)
+        loaded.merge(pending)
+        names = serializer_names_defined_in(pending)
+        pending = names.empty? ? [] : serializer_files_depending_on(names).reject { |file| loaded.include?(file) }
+      end
+    end
+
+    def serializer_names_defined_in(files)
+      base_serializers = config.base_serializers.filter_map(&:safe_constantize)
+      (base_serializers + base_serializers.flat_map(&:descendants))
+        .select { |serializer| files.include?(Object.const_source_location(serializer.name)&.first) }
+        .map { |serializer| serializer.name.demodulize }
+        .uniq
+    end
+
+    # Internal: Files whose serializers inherit from, or flat-embed, one of the
+    # named serializers: the only references that change a generated interface,
+    # since plain associations only import the other interface by name.
+    #
+    # A file is scanned as text rather than loaded, so this is cheap. Flat
+    # associations are matched loosely (a flat call anywhere plus the name
+    # anywhere) so that multi-line calls aren't missed.
+    def serializer_files_depending_on(names)
+      alternatives = names.map { |name| Regexp.escape(name) }.join("|")
+      inherits = /<\s*(?:\w+::)*(?:#{alternatives})\b/
+      mentions = /\b(?:#{alternatives})\b/
+      all_serializer_files.select { |file|
+        source = File.read(file)
+        source.match?(inherits) || (source.include?("flat") && source.match?(mentions))
+      }
     end
 
     def all_serializer_files
@@ -463,26 +499,21 @@ module TypesFromSerializers
       )
     end
 
-    # Internal: Writes if the file does not exist or the cache key has changed.
-    # The cache strategy consists of a comment on the first line of the file.
+    # Internal: Writes the file unless it already has the same content, which
+    # keeps mtimes stable so file watchers don't react to no-op generations.
     #
-    # Yields to receive the rendered file content when it needs to.
-    def write_if_changed(filename:, cache_key:, extension: "ts")
+    # Yields to receive the rendered file content.
+    def write_if_changed(filename:, extension: "ts")
       filename = config.output_dir.join("#{filename}.#{extension}")
+      content = yield
+      return if filename.exist? && filename.read == content
+
       FileUtils.mkdir_p(filename.dirname)
-      cache_key_comment = "// TypesFromSerializers CacheKey #{Digest::MD5.hexdigest(cache_key)}\n"
-      File.open(filename, "a+") { |file|
-        if stale?(file, cache_key_comment)
-          file.truncate(0)
-          file.write(cache_key_comment)
-          file.write(yield)
-        end
-      }
+      filename.write(content)
     end
 
     def serializers_index_content(serializers)
       <<~TS
-        //
         // DO NOT MODIFY: This file was automatically generated by TypesFromSerializers.
         #{serializers.reject(&:inline_serializer?).map { |s|
           "export type { default as #{s.ts_name} } from './#{s.ts_filename}'"
@@ -496,7 +527,6 @@ module TypesFromSerializers
 
     def standard_interface_definition(interface)
       <<~TS
-        //
         // DO NOT MODIFY: This file was automatically generated by TypesFromSerializers.
         #{interface.used_imports.join}
         export default #{interface.as_typescript}
@@ -505,7 +535,6 @@ module TypesFromSerializers
 
     def declaration_interface_definition(interface)
       <<~TS
-        //
         // DO NOT MODIFY: This file was automatically generated by TypesFromSerializers.
         #{interface.used_imports.empty? ? "export {}\n" : interface.used_imports.join}
         declare global {
@@ -514,11 +543,6 @@ module TypesFromSerializers
           }
         }
       TS
-    end
-
-    # Internal: Returns true if the cache key has changed since the last codegen.
-    def stale?(file, cache_key_comment)
-      @force_generation || file.gets != cache_key_comment
     end
   end
 end

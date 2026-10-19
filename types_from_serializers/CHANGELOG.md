@@ -1,3 +1,12 @@
+# [2.7.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.6.1...types_from_serializers@2.7.0) (2026-10-19)
+
+
+### Features
+
+* replace generated cache-key headers with content comparison ([#37](https://github.com/ElMassimo/types_from_serializers/issues/37)) ([1902824](https://github.com/ElMassimo/types_from_serializers/commit/19028240524cfff7007f04030b2cb968b856abec))
+
+
+
 # [2.7.0](https://github.com/ElMassimo/types_from_serializers/compare/types_from_serializers@2.6.1...types_from_serializers@2.7.0) (2026-10-17)
 
 

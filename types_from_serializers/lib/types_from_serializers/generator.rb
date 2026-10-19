@@ -151,7 +151,7 @@ module TypesFromSerializers
       TS
     end
 
-  protected
+    protected
 
     def pathname
       @pathname ||= Pathname.new(filename)
@@ -248,7 +248,7 @@ module TypesFromSerializers
       @modified.clear
     end
 
-  private
+    private
 
     def track_changes(dirs)
       Listen.to(*dirs, only: %r{.rb$}) do |modified, added, removed|
@@ -356,7 +356,7 @@ module TypesFromSerializers
       all_configs_list.map { |cfg| changes_for(cfg) }
     end
 
-  private
+    private
 
     def root
       defined?(Rails) ? Rails.root : Pathname.new(Dir.pwd)

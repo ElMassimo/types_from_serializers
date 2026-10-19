@@ -32,7 +32,7 @@ module TypesFromSerializers
         attribute type: type, **options
       end
 
-    private
+      private
 
       # Override: Remove unnecessary options in production, types are only
       # used when generating code in development.

@@ -1,13 +1,14 @@
 /**
  * modified from https://github.com/vuejs/vue-next/blob/master/scripts/release.js
  */
-const path = require('path')
-const fs = require('fs')
-const execa = require('execa')
+const fs = require('node:fs')
+const path = require('node:path')
+const process = require('node:process')
+const { execa, execaSync } = require('execa')
 const args = require('minimist')(process.argv.slice(2))
-const semver = require('semver')
-const chalk = require('chalk')
+const chalk = require('chalk').default
 const { prompt } = require('enquirer')
+const semver = require('semver')
 
 const name = args._[0]?.trim() || 'types_from_serializers'
 let targetVersion = args._[1]
@@ -178,8 +179,10 @@ async function main () {
   else
     console.log('(skipped)')
 
-  if (isRubyLibrary)
-    await run('bundle install && bin/standardrb', { shell: true })
+  if (isRubyLibrary) {
+    await run('bundle', ['install'])
+    await run('bin/standardrb', [])
+  }
 
   step('\nGenerating changelog...')
   await run('pnpm', ['changelog', name])
@@ -211,19 +214,18 @@ async function main () {
 
 /**
  * @param {string} version
- * @param {Function} runIfNotDry
  */
 async function publishGem (version) {
   try {
-    const runIfNotDry = isDryRun ? dryRun : execa.commandSync
-    await runIfNotDry('bundle exec rake release', {
+    const runIfNotDry = isDryRun ? dryRun : execaSync
+    await runIfNotDry('bundle', ['exec', 'rake', 'release'], {
       stdio: 'inherit',
       cwd: resolve('.'),
     })
     console.log(chalk.green(`Successfully published ${name}@${version}`))
   }
   catch (e) {
-    if (e.stderr.match(/previously/))
+    if (/previously/.test(e.stderr))
       console.log(chalk.red(`Skipping already published: ${name}`))
     else
       throw e
@@ -243,7 +245,7 @@ async function publishPackage (version, runIfNotDry) {
     console.log(chalk.green(`Successfully published ${name}@${version}`))
   }
   catch (e) {
-    if (e.stderr.match(/previously published/))
+    if (/previously published/.test(e.stderr))
       console.log(chalk.red(`Skipping already published: ${name}`))
     else
       throw e

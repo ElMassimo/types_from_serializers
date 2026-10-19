@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { usePage } from '~/composables/page'
 
 const { href } = defineProps<{ href: string; light?: boolean }>()
 
-const { url } = $(usePage())
+const page = usePage()
 
-const active = $computed(() => url === href)
+const active = computed(() => page.url.value === href)
 </script>
 
 <template>

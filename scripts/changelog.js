@@ -1,8 +1,9 @@
-const path = require('path')
-const fs = require('fs')
+const fs = require('node:fs')
+const path = require('node:path')
+const process = require('node:process')
 const args = require('minimist')(process.argv.slice(2))
-const execa = require('execa')
-const chalk = require('chalk')
+const chalk = require('chalk').default
+const { execa } = require('execa')
 
 const name = args._[0]?.trim() || 'types_from_serializers'
 

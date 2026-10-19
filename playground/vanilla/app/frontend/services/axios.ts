@@ -1,4 +1,5 @@
-import axios, { type AxiosResponse } from 'axios'
+import type { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { deepCamelizeKeys } from '~/helpers/object'
 
 // Configure axios to camelize response data from Rails.

@@ -1,14 +1,14 @@
-/* eslint-disable import/order */
+const process = require('node:process')
 const args = require('minimist')(process.argv.slice(2))
 const msgPath = args._[0]
-const msg = require('fs').readFileSync(msgPath, 'utf-8').trim()
+const msg = require('node:fs').readFileSync(msgPath, 'utf-8').trim()
 
 const releaseRE = /^v\d/
-const commitRE = /^(revert: )?(feat|fix|docs|dx|refactor|perf|test|workflow|build|ci|chore|lint|types|wip|release|deps)(\(.+\))?: .{1,50}/
+const commitRE = /^(?:revert: )?(?:feat|fix|docs|dx|refactor|perf|test|workflow|build|ci|chore|lint|types|wip|release|deps)(?:\(.+\))?: .{1,50}/
 
 if (!releaseRE.test(msg) && !commitRE.test(msg)) {
   console.log()
-  const chalk = require('chalk')
+  const chalk = require('chalk').default
   console.error(
     `  ${chalk.bgRed.white(' ERROR ')} ${chalk.red(
       'invalid commit message format.',

@@ -1,22 +1,22 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem "rails", "~> 6.0.3", ">= 6.0.3.2"
+gem "rails", "~> 8.1"
 
 # Use Puma as the app server
-gem "puma", "~> 4.1"
+gem "puma", "~> 8.0"
 
 # Use Vite.js as the frontend tool. Read more: https://github.com/ElMassimo/vite_ruby
 gem "vite_rails"
 
 # Use JS From Routes to generate Api helpers.
-gem "js_from_routes", "~> 2.0.6"
+gem "js_from_routes", "~> 5.0"
 
 # A more efficient version of ActiveModelSerializers (https://github.com/ElMassimo/oj_serializers)
 gem "oj_serializers"
 
 # Generate TypeScript interfaces from Ruby serializers.
-gem "types_from_serializers", path: "../.."
+gem "types_from_serializers", path: "../../types_from_serializers"
 
 # Use SQL Lite as the database.
 gem "sqlite3"

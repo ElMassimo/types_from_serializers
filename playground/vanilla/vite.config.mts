@@ -15,14 +15,13 @@ export default defineConfig({
           isCustomElement: name => name === 'lite-youtube',
         },
       },
-      reactivityTransform: true,
     }),
     components({
       dirs: ['components'],
       extensions: ['vue', 'ts'],
     }),
     windicss({
-      root: resolve(__dirname, 'app/frontend'),
+      root: resolve(import.meta.dirname, 'app/frontend'),
     }),
     reloadOnChange([
       'config/routes.rb',

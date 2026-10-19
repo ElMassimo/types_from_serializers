@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { usePage } from '~/composables/page'
 
-const { component } = $(usePage())
+const { component } = usePage()
 </script>
 
 <template>

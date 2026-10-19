@@ -1,4 +1,1 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-npx lint-staged || echo "⚠️  WARNING: This commit failed some of the linter checks. ⚠️"
+pnpm exec lint-staged || echo "⚠️  WARNING: This commit failed some of the linter checks. ⚠️"

@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec-given", "~> 3.8"
-  s.add_development_dependency "simplecov", "~> 0.22"
-  s.add_development_dependency "standard", "~> 1.0"
+  s.add_development_dependency "simplecov", "~> 1.3"
+  s.add_development_dependency "standard", "~> 1.57"
   s.add_development_dependency "activerecord"
   s.add_development_dependency "js_from_routes"
   s.add_development_dependency "sqlite3"

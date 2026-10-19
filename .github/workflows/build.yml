@@ -13,22 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.8.0
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           cache: 'pnpm'
-          node-version: 22
+          node-version: 24
 
       - run: pnpm install --frozen-lockfile
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.0"
+          ruby-version: "4.0.7"
           bundler-cache: true
 
       - name: Rubocop
@@ -49,6 +47,12 @@ jobs:
       - name: ESLint
         run: pnpm lint
 
+      - name: JavaScript Tests
+        run: pnpm test run
+
+      - name: Build Playground
+        run: pnpm --filter sample_app exec vite build
+
   test:
     name: test
     runs-on: ${{ matrix.os }}
@@ -59,6 +63,7 @@ jobs:
         os: [ubuntu-latest]
         ruby: [
           "3.3",
+          "4.0.7",
         ]
         gemfile: [
           "Gemfile-rails.7.2.x",
@@ -67,7 +72,7 @@ jobs:
         ]
         experimental: [false]
         include:
-          - ruby: "4.0"
+          - ruby: "4.0.7"
             os: ubuntu-latest
             gemfile: Gemfile-rails-edge
             experimental: true
@@ -77,7 +82,7 @@ jobs:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -92,7 +97,7 @@ jobs:
 
       - name: Upload code coverage to qlty
         if: ${{ contains(github.ref, 'main') }}
-        uses: qltysh/qlty-action/coverage@v1
+        uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/.resultset.json

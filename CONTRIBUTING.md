@@ -1,6 +1,6 @@
 ## Setting Up a Development Environment
 
-1. Install [pnpm](https://pnpm.js.org/)
+1. Install [mise](https://mise.jdx.dev/), then run `mise trust && mise install` to install Ruby 4.0.7, Node.js 24, and pnpm.
 
 2. Run the following commands to set up the development environment.
 

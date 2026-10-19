@@ -7,36 +7,36 @@
     "clean": "rm -rf playground/vanilla/app/frontend/types/serializers",
     "migrate": "cd playground/vanilla && bundle install && bin/rails db:prepare",
     "gen": "cd playground/vanilla && bundle exec rake types_from_serializers:generate",
-    "tsc": "npm -C playground/vanilla run tsc",
+    "tsc": "pnpm --filter sample_app tsc",
     "release": "node scripts/release",
-    "lint": "eslint playground/vanilla/app/frontend scripts --ext .ts,.js,.vue",
-    "postinstall": "husky install",
+    "lint": "eslint playground/vanilla/app/frontend scripts",
+    "prepare": "husky",
     "changelog": "node scripts/changelog",
     "test": "vitest"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.25.2",
-    "@types/node": "^14.18.21",
-    "@vue/tsconfig": "^0.1.3",
-    "chalk": "^4.1.2",
-    "conventional-changelog-cli": "^2.2.2",
-    "enquirer": "^2.3.6",
-    "eslint": "^8",
-    "execa": "^5.1.1",
-    "happy-dom": "^2.55.0",
-    "husky": "^5.2.0",
-    "lint-staged": "^10.5.4",
-    "minimist": "^1.2.6",
-    "semver": "^7.3.7",
-    "typescript": "^4.7.4",
-    "vitest": "^0.18.0"
+    "@antfu/eslint-config": "^9.5.1",
+    "@types/node": "^24.19.2",
+    "@vue/tsconfig": "^0.9.1",
+    "chalk": "^6.0.1",
+    "conventional-changelog-cli": "^5.0.0",
+    "enquirer": "^2.4.1",
+    "eslint": "^10.13.0",
+    "execa": "^10.1.1",
+    "happy-dom": "^21.0.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "minimist": "^1.2.8",
+    "semver": "^7.8.5",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx,vue}": [
       "eslint --fix"
     ],
     "*.rb": [
-      "bin/rubocop -A"
+      "bin/rubocop --ignore-parent-exclusion -A"
     ]
   },
   "repository": {
@@ -44,9 +44,8 @@
     "url": "https://github.com/ElMassimo/types_from_serializers"
   },
   "homepage": "https://github.com/ElMassimo/types_from_serializers",
-  "pnpm": {
-    "overrides": {
-      "eslint-plugin-vue": "9.2.0"
-    }
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=24"
   }
 }

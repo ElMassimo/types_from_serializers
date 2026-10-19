@@ -1,5 +1,9 @@
+inherit_from: .rubocop_todo.yml
+
 require:
   - standard
+
+plugins:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
@@ -36,7 +40,7 @@ RSpec/ExampleLength:
   Enabled: false
 RSpec/DescribedClass:
   Enabled: false
-RSpec/Capybara/FeatureMethods:
+RSpec/Dialect:
   Enabled: false
 
 # Trailing Commas

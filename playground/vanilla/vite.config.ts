@@ -15,7 +15,6 @@ export default defineConfig({
           isCustomElement: name => name === 'lite-youtube',
         },
       },
-      reactivityTransform: true,
     }),
     components({
       dirs: ['components'],

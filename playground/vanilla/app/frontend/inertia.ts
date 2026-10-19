@@ -1,4 +1,5 @@
-import { Inertia, type Page } from '@inertiajs/inertia'
+import type {Page} from '@inertiajs/inertia';
+import { Inertia  } from '@inertiajs/inertia'
 import { deepCamelizeKeys } from '~/helpers/object'
 export { createInertiaApp, type CreateInertiaAppProps } from '@inertiajs/inertia-vue3'
 

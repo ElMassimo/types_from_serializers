@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
 import type { Video } from '~/types/serializers'
+import { useWindowSize } from '@vueuse/core'
+import { computed } from 'vue'
 
 const { video } = defineProps<{ video: Video }>()
 
-const { width } = $(useWindowSize())
+const { width } = useWindowSize()
 
-const videoWidth = $computed(() => Math.min(width, 600) - 32)
-const videoHeight = $computed(() => 315 / 560 * videoWidth)
+const videoWidth = computed(() => Math.min(width.value, 600) - 32)
+const videoHeight = computed(() => 315 / 560 * videoWidth.value)
 
-const embedUrl = $computed(() => `https://www.youtube.com/embed/${video.youtubeId}`)
+const embedUrl = computed(() => `https://www.youtube.com/embed/${video.youtubeId}`)
 </script>
 
 <template>
   <transition name="fade" appear>
     <iframe
-      ref="youtubeEmbed"
       :width="videoWidth"
       :height="videoHeight"
       :src="embedUrl"

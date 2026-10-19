@@ -1,3 +1,5 @@
 <script lang="ts">
-export { Link as default } from '@inertiajs/inertia-vue3'
+import { Link } from '@inertiajs/inertia-vue3'
+
+export default Link
 </script>

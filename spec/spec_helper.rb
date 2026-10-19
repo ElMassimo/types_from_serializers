@@ -1,7 +1,7 @@
 require "simplecov"
 SimpleCov.start {
-  add_filter "/spec/"
-  add_filter "/playground/"
+  skip "/spec/"
+  skip "/playground/"
 }
 
 ENV["RACK_ENV"] = "development"
@@ -11,10 +11,5 @@ require "types_from_serializers"
 require "rspec/given"
 
 require_relative "support/snapshot_matcher"
-
-begin
-  require "pry-byebug"
-rescue LoadError
-end
 
 $LOAD_PATH.push File.expand_path("../playground", __dir__)

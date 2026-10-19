@@ -21,7 +21,7 @@ export default defineConfig({
       extensions: ['vue', 'ts'],
     }),
     windicss({
-      root: resolve(__dirname, 'app/frontend'),
+      root: resolve(import.meta.dirname, 'app/frontend'),
     }),
     reloadOnChange([
       'config/routes.rb',

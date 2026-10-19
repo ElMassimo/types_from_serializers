@@ -47,6 +47,12 @@ jobs:
       - name: ESLint
         run: pnpm lint
 
+      - name: JavaScript Tests
+        run: pnpm test run
+
+      - name: Build Playground
+        run: pnpm --filter sample_app exec vite build
+
   test:
     name: test
     runs-on: ${{ matrix.os }}
@@ -91,7 +97,7 @@ jobs:
 
       - name: Upload code coverage to qlty
         if: ${{ contains(github.ref, 'main') }}
-        uses: qltysh/qlty-action/coverage@v1
+        uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/.resultset.json

@@ -1,10 +1,10 @@
-const fs = require('node:fs')
 /**
  * modified from https://github.com/vuejs/vue-next/blob/master/scripts/release.js
  */
+const fs = require('node:fs')
 const path = require('node:path')
 const process = require('node:process')
-const { execa, execaCommandSync } = require('execa')
+const { execa, execaSync } = require('execa')
 const args = require('minimist')(process.argv.slice(2))
 const chalk = require('chalk').default
 const { prompt } = require('enquirer')
@@ -217,8 +217,8 @@ async function main () {
  */
 async function publishGem (version) {
   try {
-    const runIfNotDry = isDryRun ? dryRun : execaCommandSync
-    await runIfNotDry('bundle exec rake release', {
+    const runIfNotDry = isDryRun ? dryRun : execaSync
+    await runIfNotDry('bundle', ['exec', 'rake', 'release'], {
       stdio: 'inherit',
       cwd: resolve('.'),
     })

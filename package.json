@@ -36,7 +36,7 @@
       "eslint --fix"
     ],
     "*.rb": [
-      "bin/rubocop -A"
+      "bin/rubocop --ignore-parent-exclusion -A"
     ]
   },
   "repository": {
